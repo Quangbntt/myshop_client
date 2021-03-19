@@ -24,10 +24,9 @@ import { Table } from "antd";
 import { $Cookies } from "utils/cookies";
 import { JWT_TOKEN } from "utils/constants";
 import Globals from "utils/globals";
-import { BackTop } from 'antd';
+import { BackTop } from "antd";
 import { UpOutlined } from "@ant-design/icons";
 import "../../containers/Style/css/style.css";
-
 
 const { Header, Footer, Content, Sider } = Layout;
 const AuthorizedLayout = ({
@@ -59,6 +58,23 @@ const AuthorizedLayout = ({
     setCollapsed(!collapsed);
   };
   const token = $Cookies.get(JWT_TOKEN);
+  useEffect(() => {
+    window.fbAsyncInit = function () {
+      FB.init({
+        xfbml: true,
+        version: 'v10.0'
+      });
+    };
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      console.log(js.id);
+      js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  });
+
   // const onBrowseGlobalConfigRequest = useCallback(async () => {
   //   if (token) {
   //     const resultEntry = await ServiceBase.requestJson({
@@ -97,13 +113,25 @@ const AuthorizedLayout = ({
         >
           {children}
         </Content>
+        <div id="fb-root" />
+        <div
+          className="fb-customerchat"
+          attribution="install_email"
+          page_id="101130798731006"
+          theme_color="#fa3c4c"
+          logged_in_greeting="Xin chào! Tôi có thể giúp gì cho bạn"
+          logged_out_greeting="Xin chào! Tôi có thể giúp gì cho bạn"
+        />
         <BackTop>
-          <div style={style}><UpOutlined /></div>
+          <div style={style}>
+            <UpOutlined />
+          </div>
         </BackTop>
       </Layout>
     </Layout>
   );
 };
+
 const mapStateToProps = createStructuredSelector({
   isAuthenticated: makeSelectIsAuthenticated(),
   appConfig: makeSelectAppConfig(),
@@ -210,5 +238,11 @@ export default styled(
     display: block;
     padding: 0.5rem 1rem;
     color: #ff6f61;
+  }
+  a.btn.cart:hover {
+    background: #ff6f61;
+  }
+  .img-item:hover a {
+    opacity: 1 !important;
   }
 `;

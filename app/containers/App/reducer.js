@@ -15,6 +15,7 @@ import {
   SET_ENTRY,
   SET_MQTT,
   ACTION_SELECT,
+  ACTION_PROGRESS,
 } from "./constants";
 
 setupSession();
@@ -24,6 +25,7 @@ export const initialState = Map({
   appConfig: {},
   client: {},
   dataSelect: [],
+  dataProgress:[]
 });
 
 /* eslint-disable default-case, no-param-reassign */
@@ -47,10 +49,10 @@ const appReducer = (state = initialState, action) =>
       case SET_ENTRY:
         return nextState;
       case SET_MQTT:
-        nextState = nextState.set(
-          "client",
-          _.get(payload, "client")
-        );
+        nextState = nextState.set("client", _.get(payload, "client"));
+        return nextState;
+      case ACTION_PROGRESS:
+        nextState = nextState.set("dataProgress", _.get(payload, "dataProgress"));
         return nextState;
       case ACTION_SELECT:
         nextState = nextState.set("dataSelect", _.get(payload, "dataSelect"));

@@ -19,7 +19,7 @@ const Category = memo(({ className, setParams, data, params }) => {
                 <div className="container-fluid">
                     <div className="row align-items-center">
                         <div className="col-md-6">
-                            <h1>call us for any queries</h1>
+                            <h1>Mọi thắc mắc liên hệ</h1>
                         </div>
                         <div className="col-md-6" style={{textAlign: "right"}}>
                             <a href="tel:0123456789">+012-345-6789</a>

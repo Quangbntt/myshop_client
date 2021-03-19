@@ -10,3 +10,4 @@ export const SET_ENTRY = `${module}SET_ENTRY`;
 export const LOGOUT = `${module}LOGOUT`;
 export const SET_MQTT = `${module}SET_MQTT`;
 export const ACTION_SELECT = `${module}ACTION_SELECT`;
+export const ACTION_PROGRESS = `${module}ACTION_PROGRESS`;

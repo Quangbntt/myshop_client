@@ -55,12 +55,12 @@ export const authorizedRoutes = [
     component: Home,
   },
   {
-    path: "/product-list",
+    path: "/san-pham",
     exact: true,  
     component: ProductList,
   },
   {
-    path: "/product-detail",
+    path: "/chi-tiet-san-pham",
     exact: true,  
     component: ProductDetail,
   },

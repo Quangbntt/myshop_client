@@ -47,4 +47,10 @@ export const makeSelectMap = () =>
     substate => substate.get('dataSelect'),
   )
 
+  export const makeActionPro = ()=>
+  createSelector(
+    selectAppDomain,
+    substate => substate.get('dataProgress'),
+  )
+
 export { selectAppDomain };

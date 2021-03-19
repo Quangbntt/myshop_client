@@ -1,5 +1,12 @@
-import React, { memo, useState, useEffect, useMemo, Component } from "react";
-import { Table, Badge, Menu, Dropdown, Space, Button, Input, Spin } from "antd";
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useMemo,
+  Component,
+  useCallback,
+} from "react";
+import { Table, Badge, Menu, Dropdown, Space, Button, Input, Spin, Rate } from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import _ from "lodash";
@@ -8,11 +15,16 @@ import * as style from "components/Variables";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import ServiceBase from "utils/ServiceBase";
 import Review1 from "images/review-1.jpg";
 import Review2 from "images/review-2.jpg";
 import Review3 from "images/review-3.jpg";
 
-const Feedback = memo(({ className, setParams, data, params }) => {
+let time = null;
+const Feedback = memo(({ className }) => {
+  const [totalLength, setTotalLength] = useState(0);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   var isMobile = {
     Android: function() {
       return navigator.userAgent.match(/Android/i);
@@ -51,7 +63,32 @@ const Feedback = memo(({ className, setParams, data, params }) => {
     autoplaySpeed: 2000,
     pauseOnHover: true,
   };
-
+  const boweload = useCallback(async () => {
+    setLoading(true);
+    let result = await ServiceBase.requestJson({
+      url: "/feedback/all",
+      method: "GET",
+      data: {},
+      // data: "",
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      setTotalLength(_.get(result, "value.length"));
+      let i = 0;
+      let arrData = _.map(_.get(result, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setData(arrData);
+    }
+  }, []);
+  useEffect(() => {
+    clearTimeout(time);
+    time = setTimeout(boweload, 800);
+  }, [boweload]);
   return (
     <div
       className={classNames({
@@ -64,66 +101,28 @@ const Feedback = memo(({ className, setParams, data, params }) => {
             {...settings}
             className="row align-items-center review-slider normal-slider"
           >
-            <div className="review-slider-item">
-              <div className="review-img">
-                <img src={Review1} alt="Image" />
-              </div>
-              <div className="review-text col-lg-8">
-                <h2>Customer Name</h2>
-                <h3>Profession</h3>
-                <div className="ratting">
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
+            {_.map(data, (item, key) => {
+              return (
+                <div className="review-slider-item" key={key}>
+                  <div className="review-img">
+                    <img src={item.user_image} alt="Avarta" />
+                  </div>
+                  <div className="review-text col-lg-8">
+                    <h2>{item.name}</h2>
+                    <h3>{item.address}</h3>
+                    <div className="ratting">
+                      <Rate allowHalf defaultValue={item.feedback_rate} disabled={true} />
+                      {/* <i className="fa fa-star" />
+                      <i className="fa fa-star" />
+                      <i className="fa fa-star" />
+                      <i className="fa fa-star" />
+                      <i className="fa fa-star" /> */}
+                    </div>
+                    <p>{item.feedback_comment}</p>
+                  </div>
                 </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Curabitur vitae nunc eget leo finibus luctus et vitae lorem
-                </p>
-              </div>
-            </div>
-            <div className="review-slider-item">
-              <div className="review-img">
-                <img src={Review2} alt="Image" />
-              </div>
-              <div className="review-text col-lg-8">
-                <h2>Customer Name</h2>
-                <h3>Profession</h3>
-                <div className="ratting">
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Curabitur vitae nunc eget leo finibus luctus et vitae lorem
-                </p>
-              </div>
-            </div>
-            <div className="review-slider-item">
-              <div className="review-img">
-                <img src={Review3} alt="Image" />
-              </div>
-              <div className="review-text col-lg-8">
-                <h2>Customer Name</h2>
-                <h3>Profession</h3>
-                <div className="ratting">
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                  <i className="fa fa-star" />
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Curabitur vitae nunc eget leo finibus luctus et vitae lorem
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </Slider>
         </div>
       </div>

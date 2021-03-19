@@ -103,7 +103,7 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
             >
               <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
-                  <a className="nav-link navbar_text" href="/product-list">
+                  <a className="nav-link navbar_text" href="/san-pham">
                     Sản phẩm
                   </a>
                 </li>
@@ -136,17 +136,17 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
                   </div>
                 </li> */}
                 <li className="nav-item">
-                  <a className="nav-link navbar_text" href="#">
+                  <a className="nav-link navbar_text" href="/tin-tuc">
                     Tin tức
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link navbar_text" href="#">
+                  <a className="nav-link navbar_text" href="/bo-suu-tap">
                     Bộ sưu tập
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link navbar_text" href="#">
+                  <a className="nav-link navbar_text" href="/lien-he">
                     Liên hệ
                   </a>
                 </li>

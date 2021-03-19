@@ -20,17 +20,9 @@ let time = null;
 
 const Home = memo(({ className }) => {
   const [loading, setLoading] = useState(false);
-  const [row, setRow] = useState({
-    data: [],
-    arrKey: [],
-    arrKeyOld: [],
-    dataOld: [],
-    name: undefined,
-    price_from: undefined,
-    price_to: undefined,
-    branch: undefined,
-    // category: undefined,
-  });
+  const [data, setData] = useState([]);
+  const [dataHot, setDataHot] = useState([]);
+  const [dataBranch, setDataBranch] = useState([]);
   const [totalLength, setTotalLength] = useState(0);
 
   const [params, setParams] = useState({
@@ -39,41 +31,78 @@ const Home = memo(({ className }) => {
     limit: 100,
     name: undefined,
     branch: undefined,
-    // category: undefined,
     price_from: undefined,
     price_to: undefined,
   });
 
-  // const boweload = useCallback(async () => {
-  //   let newParams = {
-  //     price_from: params.price_from,
-  //     price_to: params.price_to,
-  //     category: _.get(params, "category.key"),
-  //     branch: _.get(params, "branch.key"),
-  //     page: params.page,
-  //     limit: params.limit,
-  //   };
+  const boweload = useCallback(async () => {
+    let newParams = {
+      price_from: params.price_from,
+      price_to: params.price_to,
+      category: _.get(params, "category.key"),
+      branch: _.get(params, "branch.key"),
+      page: params.page,
+      limit: params.limit,
+    };
 
-  //   setLoading(true);
-  //   let result = await ServiceBase.requestJson({
-  //     url: "/report/report_synthetic",
-  //     method: "GET",
-  //     data: newParams,
-  //   });
-  //   if (result.hasErrors) {
-  //     Ui.showErrors(result.errors);
-  //     setLoading(false);
-  //   } else {
-  //     setLoading(false);
-  //     setTotalLength(_.get(result, "value.total"));
-  //     let arrNew = _.get(result, "value");
-  //     await totalDetailDate(setRow, arrNew);
-  //   }
-  // }, [params]);
-  // useEffect(() => {
-  //   clearTimeout(time);
-  //   time = setTimeout(boweload, 800);
-  // }, [boweload]);
+    setLoading(true);
+    let result = await ServiceBase.requestJson({
+      url: "/product/all",
+      method: "GET",
+      data: newParams,
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      setTotalLength(_.get(result, "value.total"));
+      let i = 0;
+      let arrData = _.map(_.get(result, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setData(arrData);
+    }
+    let hotResult = await ServiceBase.requestJson({
+      url: "/product/hot",
+      method: "GET",
+      data: {},
+    });
+    if (hotResult.hasErrors) {
+      Ui.showErrors(hotResult.errors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      let i = 0;
+      let arrDataHot = _.map(_.get(hotResult, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setDataHot(arrDataHot);
+    }
+    let branch = await ServiceBase.requestJson({
+      url: "/branch/all",
+      method: "GET",
+      data: {},
+    });
+    if (branch.hasErrors) {
+      Ui.showErrors(branch.errors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      let i = 0;
+      let arrBranch = _.map(_.get(branch, "value"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setDataBranch(arrBranch);
+    }
+  }, [params]);
+  useEffect(() => {
+    clearTimeout(time);
+    time = setTimeout(boweload, 800);
+  }, [boweload]);
   return (
     <div className={classNames({
       [className]: true,
@@ -81,9 +110,9 @@ const Home = memo(({ className }) => {
       <div className="breadcrumb-wrap">
         <div className="container-fluid">
           <ul className="breadcrumb">
-            <li className="breadcrumb-item"><a href="#">Home</a></li>
-            <li className="breadcrumb-item"><a href="#">Products</a></li>
-            <li className="breadcrumb-item active">Product List</li>
+            <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
+            <li className="breadcrumb-item"><a href="#">Sản phẩm</a></li>
+            <li className="breadcrumb-item active">Danh sách</li>
           </ul>
         </div>
       </div>
@@ -92,25 +121,19 @@ const Home = memo(({ className }) => {
             <Fillter 
               params={params}
               setParams={setParams}
-              // visible={visible}
-              // setVisible={setVisible}
-              setRow={setRow}
-              row={row}
-              data={_.get(row, "data")}
+              data={data}
             />
             <List 
-              data={_.get(row, "data")}
+              data={data}
+              setData={setData}
+              dataHot={dataHot}
+              setDataHot={setDataHot}
               loading={loading}
-              // grid={grid}
               setParams={setParams}
               totalLength={totalLength}
-              // visible={visible}
-              // setVisible={setVisible}
-              setRow={setRow}
               params={params}
-              row={row}
-              // show={show}
-              // setShow={setShow}
+              dataBranch={dataBranch}
+              setDataBranch={setDataBranch}
             />
           </div>
         </div>

@@ -23,7 +23,7 @@ function Footer({ className, pathName }) {
                 <div className="row">
                     <div className="col-lg-3 col-md-6">
                         <div className="footer-widget">
-                            <h2>Get in Touch</h2>
+                            <h2>Liên hệ</h2>
                             <div className="contact-info">
                                 <p><i className="fa fa-map-marker"></i>123 E Store, Los Angeles, USA</p>
                                 <p><i className="fa fa-envelope"></i>email@example.com</p>
@@ -34,7 +34,7 @@ function Footer({ className, pathName }) {
                     
                     <div className="col-lg-3 col-md-6">
                         <div className="footer-widget">
-                            <h2>Follow Us</h2>
+                            <h2>Đăng ký</h2>
                             <div className="contact-info">
                                 <div className="social">
                                     <a href=""><i className="fab fa-twitter"></i></a>
@@ -49,7 +49,7 @@ function Footer({ className, pathName }) {
 
                     <div className="col-lg-3 col-md-6">
                         <div className="footer-widget">
-                            <h2>Company Info</h2>
+                            <h2>Về chúng tôi</h2>
                             <ul>
                                 <li><a href="#">About Us</a></li>
                                 <li><a href="#">Privacy Policy</a></li>
@@ -60,7 +60,7 @@ function Footer({ className, pathName }) {
 
                     <div className="col-lg-3 col-md-6">
                         <div className="footer-widget">
-                            <h2>Purchase Info</h2>
+                            <h2>Chính sách</h2>
                             <ul>
                                 <li><a href="#">Pyament Policy</a></li>
                                 <li><a href="#">Shipping Policy</a></li>

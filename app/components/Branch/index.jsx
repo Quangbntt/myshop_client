@@ -13,6 +13,7 @@ import Branch5 from "images/brand-5.png";
 import Branch6 from "images/brand-6.png";
 import FlexStyle from "containers/Style/flex";
 import _ from "lodash";
+import { Ui } from "utils/Ui";
 const prefix = "app.routing.";
 let time = null;
 const Branch = memo(({ className }) => {
@@ -71,7 +72,7 @@ const Branch = memo(({ className }) => {
               <div className="slide-track">
                 {_.map(data, (item, index) => {
                   return (
-                    <div className="slide">
+                    <div className="slide" key={index}>
                       <img
                         src={item.branches_image}
                         height="100"

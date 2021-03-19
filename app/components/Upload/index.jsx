@@ -18,10 +18,8 @@ const UploadList = ({}) => {
     return `${API_BASE_URL}upload/multi/files`;
   };
   const customRequest = async (option) => {
-      console.log('option.file',option.file)
     const data = new FormData();
     data.set("files", option.file);
-    console.log('data',data)
     let result = await ServiceBase.requestJson({
       url: `${API_BASE_URL}upload/multi/files`,
       method: "POST",

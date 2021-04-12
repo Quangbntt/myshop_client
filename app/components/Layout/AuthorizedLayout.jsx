@@ -126,11 +126,11 @@ const AuthorizedLayout = ({
           logged_out_greeting="Xin chào! Tôi có thể giúp gì cho bạn"
         />
         <MessengerCustomerChat pageId="101130798731006" appId="1022924814904577" />
-        {/* <BackTop>
+        <BackTop>
           <div style={style}>
             <UpOutlined />
           </div>
-        </BackTop> */}
+        </BackTop>
       </Layout>
     </Layout>
   );

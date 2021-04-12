@@ -1,0 +1,67 @@
+{
+  "icons": [
+    {
+      "src": "/icon_180x180.eb501ddefc3ecab323643299ca98f700.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_167x167.ddabd0110af7a699732764b9a78f453f.png",
+      "sizes": "167x167",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_152x152.4d8268aeb8b6f5b14cdd9a57cedf5316.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_120x120.a0674dbfcf32600dcf8e65882ca9821d.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_512x512.f5e9656afa9c69b15012f898f82134fd.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_384x384.5afeb98d078ff2565a976ab9e83b6b24.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_192x192.55cc32665e62c52aee5f2150f923ba59.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_144x144.6df5024afe6e856ef0a9a23459529176.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_128x128.a04f1d1146df3c0585f251b70502266f.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_96x96.5f44665808ca4a24a0ba6fd4be41b6f5.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_72x72.3d81c5dcb9ca37cf5b61db49e850c322.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    }
+  ],
+  "name": "BOC",
+  "short_name": "CR",
+  "orientation": "portrait",
+  "display": "standalone",
+  "start_url": ".",
+  "description": "HAI VAN BOC!",
+  "background_color": "#fafafa",
+  "theme_color": "#b1624d"
+}

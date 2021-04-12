@@ -6,7 +6,17 @@ import React, {
   Component,
   useCallback,
 } from "react";
-import { Table, Badge, Menu, Dropdown, Space, Button, Input, Spin, Rate } from "antd";
+import {
+  Table,
+  Badge,
+  Menu,
+  Dropdown,
+  Space,
+  Button,
+  Input,
+  Spin,
+  Rate,
+} from "antd";
 import classNames from "classnames";
 import moment from "moment";
 import _ from "lodash";
@@ -16,6 +26,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import * as style from "components/Variables";
 import ServiceBase from "utils/ServiceBase";
+import Ui from "utils/Ui";
 
 let time;
 const FeatureProduct = memo(({ className }) => {
@@ -102,17 +113,17 @@ const FeatureProduct = memo(({ className }) => {
             className="row align-items-center product-slider product-slider-4"
           >
             {_.map(data, (item, key) => {
+              var url = "chi-tiet-" + item.product_id + "/" + item.product_name;
               return (
                 <div className="product-item" key={key}>
                   <div className="product-title">
                     <a href="/chi-tiet">{item.product_name}</a>
                     <div className="ratting">
-                      <Rate allowHalf defaultValue={item.product_rate} disabled={true} />
-                      {/* <i className="fa fa-star" />
-                      <i className="fa fa-star" />
-                      <i className="fa fa-star" />
-                      <i className="fa fa-star" />
-                      <i className="fa fa-star" /> */}
+                      <Rate
+                        allowHalf
+                        defaultValue={item.product_rate}
+                        disabled={true}
+                      />
                     </div>
                   </div>
                   <div className="product-image">
@@ -123,20 +134,15 @@ const FeatureProduct = memo(({ className }) => {
                       <a href="/chi-tiet">
                         <i className="fa fa-cart-plus" />
                       </a>
-                      <a href="#">
-                        <i className="fas fa-eye"></i>
+                      <a href={url}>
+                        <i className="fas fa-eye" />
                       </a>
-                      {/* <a href="#">
-                        <i className="fa fa-heart" />
-                      </a>
-                      <a href="#">
-                        <i className="fa fa-search" />
-                      </a> */}
                     </div>
                   </div>
                   <div className="product-price">
                     <h3>
-                      {item.product_price.toLocaleString()}<span>vnđ</span>
+                      {item.product_price.toLocaleString()}
+                      <span>vnđ</span>
                     </h3>
                     <a className="btn" href="">
                       <i className="fa fa-shopping-cart" />
@@ -259,7 +265,7 @@ const FeatureProduct = memo(({ className }) => {
               </div>
             </div>
             <div className="product-item"> */}
-              {/* <div className="product-title">
+            {/* <div className="product-title">
                 <a href="#">Product Name</a>
                 <div className="ratting">
                   <i className="fa fa-star" />

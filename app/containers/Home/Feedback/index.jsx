@@ -16,6 +16,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ServiceBase from "utils/ServiceBase";
+import Ui from "utils/Ui";
 import Review1 from "images/review-1.jpg";
 import Review2 from "images/review-2.jpg";
 import Review3 from "images/review-3.jpg";

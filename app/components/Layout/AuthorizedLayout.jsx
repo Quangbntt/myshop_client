@@ -27,6 +27,7 @@ import Globals from "utils/globals";
 import { BackTop } from "antd";
 import { UpOutlined } from "@ant-design/icons";
 import "../../containers/Style/css/style.css";
+import MessengerCustomerChat from "react-messenger-customer-chat";
 
 const { Header, Footer, Content, Sider } = Layout;
 const AuthorizedLayout = ({
@@ -59,20 +60,22 @@ const AuthorizedLayout = ({
   };
   const token = $Cookies.get(JWT_TOKEN);
   useEffect(() => {
-    window.fbAsyncInit = function () {
+    window.fbAsyncInit = function() {
       FB.init({
         xfbml: true,
-        version: 'v10.0'
+        version: "v10.0",
       });
     };
-    (function (d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
+    (function(d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
+      js = d.createElement(s);
+      js.id = id;
       console.log(js.id);
-      js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
       fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+    })(document, "script", "facebook-jssdk");
   });
 
   // const onBrowseGlobalConfigRequest = useCallback(async () => {
@@ -122,11 +125,12 @@ const AuthorizedLayout = ({
           logged_in_greeting="Xin chào! Tôi có thể giúp gì cho bạn"
           logged_out_greeting="Xin chào! Tôi có thể giúp gì cho bạn"
         />
-        <BackTop>
+        <MessengerCustomerChat pageId="101130798731006" appId="1022924814904577" />
+        {/* <BackTop>
           <div style={style}>
             <UpOutlined />
           </div>
-        </BackTop>
+        </BackTop> */}
       </Layout>
     </Layout>
   );

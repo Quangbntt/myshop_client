@@ -26,11 +26,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import ServiceBase from "utils/ServiceBase";
 import "slick-carousel/slick/slick-theme.css";
-import Product6 from "images/product-6.jpg";
-import Product7 from "images/product-7.jpg";
-import Product8 from "images/product-8.jpg";
-import Product9 from "images/product-9.jpg";
-import Product10 from "images/product-10.jpg";
+import Ui from "utils/Ui";
 
 let time = null;
 const RecentProduct = memo(({ className }) => {
@@ -132,6 +128,7 @@ const RecentProduct = memo(({ className }) => {
             className="row align-items-center product-slider product-slider-4"
           >
             {_.map(data, (item, key) => {
+              var url = "chi-tiet-" + item.product_id + "/" + item.product_name;
               return (
                 <div className="product-item" key={key}>
                   <div className="product-title">
@@ -142,11 +139,6 @@ const RecentProduct = memo(({ className }) => {
                         defaultValue={item.product_rate}
                         disabled={true}
                       />
-                      {/* <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" /> */}
                     </div>
                   </div>
                   <div className="product-image">
@@ -157,15 +149,9 @@ const RecentProduct = memo(({ className }) => {
                       <a href="#">
                         <i className="fa fa-cart-plus" />
                       </a>
-                      <a href="#">
+                      <a href={url}>
                         <i className="fas fa-eye" />
                       </a>
-                      {/* <a href="#">
-                          <i className="fa fa-heart" />
-                        </a>
-                        <a href="#">
-                          <i className="fa fa-search" />
-                        </a> */}
                     </div>
                   </div>
                   <div className="product-price">

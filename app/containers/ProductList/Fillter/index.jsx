@@ -39,9 +39,8 @@ const Fillter = memo(({ className, params, setParams }) => {
       let nextState = { ...preState };
       nextState.name = undefined;
       nextState.branch = undefined;
-      // nextState.category = undefined;
-      nextState.price_from = undefined;
-      nextState.price_to = undefined;
+      nextState.priceFrom = undefined;
+      nextState.priceTo = undefined;
       nextState.page = 1;
       nextState.size = 10;
       return nextState;
@@ -52,7 +51,6 @@ const Fillter = memo(({ className, params, setParams }) => {
   const pushQuery = useMemo(() => {
     let pathName = location.pathname;
     let pathProductName = [];
-    // let pathCategory = [];
     let pathBranch = [];
     let pathPriceFrom = "";
     let pathPriceTo = "";
@@ -132,7 +130,7 @@ const Fillter = memo(({ className, params, setParams }) => {
               }}
             >
               <InputNumber
-                value={params.moneyFrom}
+                value={params.priceFrom}
                 formatter={(value) =>
                   ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
@@ -144,7 +142,7 @@ const Fillter = memo(({ className, params, setParams }) => {
                     .replace(/\$\s?|(,*)/g, "")
                 }
                 onChange={(value) => {
-                  getQuery(value, "moneyFrom");
+                  getQuery(value, "priceFrom");
                 }}
               />
             </Col>
@@ -178,7 +176,7 @@ const Fillter = memo(({ className, params, setParams }) => {
               }}
             >
               <InputNumber
-                value={params.moneyTo}
+                value={params.priceTo}
                 formatter={(value) =>
                   ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
@@ -190,7 +188,7 @@ const Fillter = memo(({ className, params, setParams }) => {
                     .replace(/\$\s?|(,*)/g, "")
                 }
                 onChange={(value) => {
-                  getQuery(value, "moneyTo");
+                  getQuery(value, "priceTo");
                 }}
               />
             </Col>

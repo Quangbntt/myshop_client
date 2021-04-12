@@ -1171,7 +1171,7 @@ h2 {
 }
 
 .product-detail .product-content .quantity input {
-    width: 40px;
+    width: 50px;
     height: 30px;
     color: #ffffff;
     font-size: 16px;
@@ -3553,16 +3553,6 @@ h2 {
 
 .product-detail .product-content .quantity button.btn-plus {
     border-radius: 0 4px 4px 0;
-}
-
-.product-detail .product-content .quantity input {
-    width: 40px;
-    height: 30px;
-    color: #ffffff;
-    font-size: 16px;
-    text-align: center;
-    background: #000000;
-    border: none;
 }
 
 .product-detail .product-content .action a:first-child {

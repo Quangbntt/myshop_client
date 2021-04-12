@@ -26,7 +26,6 @@ const Home = memo(({ className }) => {
   const [totalLength, setTotalLength] = useState(0);
 
   const [params, setParams] = useState({
-    thang: moment(),
     page: 1,
     limit: 100,
     name: undefined,
@@ -36,11 +35,19 @@ const Home = memo(({ className }) => {
   });
 
   const boweload = useCallback(async () => {
+    let arrProduct = [];
+    let arrBranch = [];
+    _.map(params.name, (item, key) => {
+      arrProduct.push(item.value);
+    });
+    _.map(params.branch, (item, key) => {
+      arrBranch.push(item.value);
+    });
     let newParams = {
-      price_from: params.price_from,
-      price_to: params.price_to,
-      category: _.get(params, "category.key"),
-      branch: _.get(params, "branch.key"),
+      price_from: params.priceFrom,
+      price_to: params.priceTo,
+      product: arrProduct,
+      branch: arrBranch,
       page: params.page,
       limit: params.limit,
     };
@@ -104,26 +111,29 @@ const Home = memo(({ className }) => {
     time = setTimeout(boweload, 800);
   }, [boweload]);
   return (
-    <div className={classNames({
-      [className]: true,
-    })}>
+    <div
+      className={classNames({
+        [className]: true,
+      })}
+    >
       <div className="breadcrumb-wrap">
         <div className="container-fluid">
           <ul className="breadcrumb">
-            <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
-            <li className="breadcrumb-item"><a href="#">Sản phẩm</a></li>
+            <li className="breadcrumb-item">
+              <a href="/">Trang chủ</a>
+            </li>
+            <li className="breadcrumb-item">
+              <a href="/san-pham">Sản phẩm</a>
+            </li>
             <li className="breadcrumb-item active">Danh sách</li>
           </ul>
         </div>
       </div>
       <div className="product-view">
         <div className="container-fluid">
-            <Fillter 
-              params={params}
-              setParams={setParams}
-              data={data}
-            />
-            <List 
+          <Spin spinning={loading}>
+            <Fillter params={params} setParams={setParams} data={data} />
+            <List
               data={data}
               setData={setData}
               dataHot={dataHot}
@@ -135,8 +145,9 @@ const Home = memo(({ className }) => {
               dataBranch={dataBranch}
               setDataBranch={setDataBranch}
             />
-          </div>
+          </Spin>
         </div>
+      </div>
       <Footer />
     </div>
   );

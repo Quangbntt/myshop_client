@@ -172,22 +172,40 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
                   </div>
                 </div>
               ) : (
-                <div
-                  style={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <a
+                <>
+                  <div
                     style={{
-                      color: "#fff",
-                      padding: "8px",
-                      borderRadius: "4px",
+                      cursor: "pointer",
                     }}
-                    href="/signin"
                   >
-                    Đăng nhập
-                  </a>
-                </div>
+                    <a
+                      style={{
+                        color: "#fff",
+                        padding: "8px",
+                        borderRadius: "4px",
+                      }}
+                      href="/signin"
+                    >
+                      Đăng nhập
+                    </a>
+                  </div>
+                  <div
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <a
+                      style={{
+                        color: "#fff",
+                        padding: "8px",
+                        borderRadius: "4px",
+                      }}
+                      href="/dang-ky"
+                    >
+                      Đăng ký
+                    </a>
+                  </div>
+                </>
               )}
             </div>
           </nav>

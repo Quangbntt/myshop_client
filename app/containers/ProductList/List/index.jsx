@@ -43,6 +43,18 @@ const List = memo(
       autoplay: true,
       autoplaySpeed: 2000,
     };
+    const onClick = (item) => {
+      const obj = {
+        key: item.branches_id,
+        label: item.branches_name,
+        value: item.branches_id,
+      }
+      setParams((preState) => {
+        let nextState = { ...preState };
+        nextState.branch = [obj];
+        return nextState;
+      });
+    }
     return (
       <div
         className={classNames({
@@ -53,6 +65,7 @@ const List = memo(
           <div className="col-lg-8">
             <div className="row">
               {_.map(data, (item, key) => {
+                var url = "chi-tiet-" + item.product_id + "/" + item.product_name;
                 return (
                   <div className="col-md-4" key={key}>
                     <div className="product-item">
@@ -64,11 +77,6 @@ const List = memo(
                             defaultValue={item.product_rate}
                             disabled={true}
                           />
-                          {/* <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" /> */}
                         </div>
                       </div>
                       <div className="product-image">
@@ -79,7 +87,7 @@ const List = memo(
                           <a href="#">
                             <i className="fa fa-cart-plus" />
                           </a>
-                          <a href="#">
+                          <a href={url}>
                             <i className="fas fa-eye" />
                           </a>
                         </div>
@@ -113,6 +121,7 @@ const List = memo(
               <h2 className="title">Sản phẩm hot</h2>
               <Slider {...settings} className="sidebar-slider normal-slider">
                 {_.map(dataHot, (item, key) => {
+                  var url = "chi-tiet-" + item.product_id + "/" + item.product_name;
                   return (
                     <div className="product-item" key={key}>
                       <div className="product-title">
@@ -136,7 +145,7 @@ const List = memo(
                           <a href="#">
                             <i className="fa fa-cart-plus" />
                           </a>
-                          <a href="#">
+                          <a href={url}>
                             <i className="fas fa-eye" />
                           </a>
                         </div>
@@ -162,8 +171,8 @@ const List = memo(
               <ul>
                 {_.map(dataBranch, (item, key) => {
                   return (
-                    <li key={key}>
-                      <a href="#">{item.branches_name} </a>
+                    <li onClick={() => onClick(item)} key={key}>
+                      <a>{item.branches_name} </a>
                       <span>{item.total}</span>
                     </li>
                   );

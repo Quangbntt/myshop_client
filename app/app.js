@@ -41,6 +41,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { translationMessages } from "./i18n";
 import configureStore from "./configureStore";
+import {storage} from "firebase";
 
 library.add(faSearch, faChevronLeft, faPlus, faCircle, faAngleDown);
 

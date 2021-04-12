@@ -66,6 +66,7 @@ function Footer({ className, pathName }) {
       className={classNames({
         [className]: true,
       })}
+      style={{padding: "0px"}}
     >
       <div className="bottom-bar">
         <div className="container-fluid">

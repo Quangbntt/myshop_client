@@ -10,6 +10,7 @@ import ProductDetail from "containers/ProductDetail/Loadable";
 import Cart from "containers/Cart/Loadable";
 import Account from "containers/Account/Loadable";
 import Contact from "containers/Contact/Loadable";
+import Register from "containers/Register/Loadable";
 
 
 import Profile from "containers/Profile/Loadable";
@@ -60,7 +61,12 @@ export const authorizedRoutes = [
     component: ProductList,
   },
   {
-    path: "/chi-tiet-san-pham",
+    path: "/dang-ky",
+    exact: true,  
+    component: Register,
+  },
+  {
+    path: "/chi-tiet:id/:productName",
     exact: true,  
     component: ProductDetail,
   },

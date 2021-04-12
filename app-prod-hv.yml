@@ -1,9 +1,0 @@
-apps:
-  - script : ./server.js
-    name: admin-prod-hv
-    instances: 1
-    exec_mode: fork
-    env :
-      PORT_ENV: 'PROD'
-      PORT: 7002
-    node_args: "--max-old-space-size=4048"

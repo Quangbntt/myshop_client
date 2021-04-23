@@ -108,6 +108,8 @@
     "react-bootstrap": "^1.5.1",
     "react-dom": "^16.13.1",
     "react-error-boundary": "^1.2.5",
+    "react-facebook-login": "^4.1.1",
+    "react-google-login": "^5.2.2",
     "react-google-maps": "^9.4.5",
     "react-helmet": "^6.0.0",
     "react-icons": "^3.10.0",

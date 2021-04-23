@@ -20,11 +20,13 @@ import { Paper } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import _ from "lodash";
+import FacebookLogin from "react-facebook-login";
 // import Input from "components/Input";
 import { URI } from "./constants";
 import BackgroundSingin from "images/img17.jpg";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { APP_NAME } from "utils/constants";
+import GoogleLogin from "react-google-login";
 
 import "./style.scss";
 const { Title } = Typography;
@@ -32,6 +34,64 @@ const formLayout = {
   wrapperCol: { span: 20 },
 };
 const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
+  //Xử lý đăng nhập google
+  const responseGoogle = (response) => {
+    Ui.showSuccess({ message: "Đăng nhập hệ thống thành công." });
+    let profile = _.get(response, "profileObj");
+
+    profile = {
+      ...profile,
+      parentName: _.get(profile, "name", ""),
+      adm_name: _.get(profile, "givenName", ""),
+      parentId: _.get(profile, "googleId", ""),
+      rolesName: _.get(profile, "email", ""),
+    };
+    delete profile.role;
+    Globals.setSession({
+      public: {
+        erpReport: JSON.stringify(profile),
+      },
+
+      private: {
+        token: _.get(response, "accessToken"),
+        refresh_token: _.get(response, "accessToken"),
+      },
+    });
+
+    setAuthenticated({
+      isAuthenticated: true,
+      profile,
+    });
+  };
+  //Xử lý đăng nhập bằng facebook
+  const responseFacebook = (response) => {
+    Ui.showSuccess({ message: "Đăng nhập hệ thống thành công." });
+    let profile = response;
+    profile = {
+      ...profile,
+      parentName: _.get(profile, "name", ""),
+      adm_name: _.get(profile, "name", ""),
+      parentId: _.get(profile, "userID", ""),
+      rolesName: _.get(profile, "graphDomain", ""),
+    };
+    delete profile.role;
+    Globals.setSession({
+      public: {
+        erpReport: JSON.stringify(profile),
+      },
+
+      private: {
+        token: _.get(response, "accessToken"),
+        refresh_token: _.get(response, "accessToken"),
+      },
+    });
+
+    setAuthenticated({
+      isAuthenticated: true,
+      profile,
+    });
+  };
+
   let nameApp = "Hải Vân";
   if (APP_NAME == "vungtau") {
     nameApp = "Đắc Quang Shop";
@@ -66,7 +126,7 @@ const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
           public: {
             erpReport: JSON.stringify(profile),
           },
-          
+
           private: {
             token: _.get(result, "value.accessToken"),
             refresh_token: _.get(result, "value.refreshToken"),
@@ -102,7 +162,7 @@ const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
         gutter={15}
         className="animation"
         style={{
-          width: "21%",
+          width: "25%",
           background: "#fff",
           borderRadius: 10,
         }}
@@ -157,21 +217,10 @@ const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
               size="large"
             />
           </Form.Item>
-          {/* <Row gutter={15}>
-            <Col xxl={12} xl={7} lg={7} md={7}>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Đăng nhập
-                </Button>
-              </Form.Item>
-            </Col>
-            <Col xxl={12} xl={15} lg={15} md={15}>
-              <Form.Item name="remember" valuePropName="checked">
-                <Checkbox>Ghi nhớ mật khẩu</Checkbox>
-              </Form.Item>
-            </Col>
-          </Row> */}
 
+          <Form.Item name="remember" valuePropName="checked">
+            <Checkbox>Ghi nhớ mật khẩu</Checkbox>
+          </Form.Item>
           <Form.Item>
             <Button
               type="primary"
@@ -181,10 +230,32 @@ const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
               Đăng nhập
             </Button>
           </Form.Item>
-          <Form.Item name="remember" valuePropName="checked">
-            <Checkbox>Ghi nhớ mật khẩu</Checkbox>
-          </Form.Item>
         </Form>
+        <Col xs={12} style={{ padding: "15px" }}>
+          <FacebookLogin
+            appId="1022924814904577"
+            autoLoad={false}
+            fields="name,email,picture"
+            // onClick={componentClicked}
+            callback={responseFacebook}
+            className="style-button"
+            // cssClass="my-facebook-button-class"
+            icon="fa-facebook"
+            textButton="Login Facebook"
+            version="3.1"
+          />
+        </Col>
+        <Col xs={12} style={{ padding: "15px" }}>
+          <GoogleLogin
+            clientId="751045228709-279k93krc3eh3n8lhm09p3a5uclq7968.apps.googleusercontent.com"
+            buttonText="Login"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+            isSignedIn={false}
+            className="style-button"
+            cookiePolicy={"single_host_origin"}
+          />
+        </Col>
       </Row>
     </Paper>
   );
@@ -249,5 +320,18 @@ export default compose(
       line-height: 1;
       content: "*" !important;
     }
+  }
+  .style-button {
+    width: 100%;
+  }
+  .kep-login-facebook.metro {
+    border-radius: 4px;
+    padding: 0px;
+    box-shadow: rgb(0 0 0 / 24%) 0px 2px 2px 0px,
+      rgb(0 0 0 / 24%) 0px 0px 1px 0px;
+    font-size: 14px;
+    text-transform: capitalize;
+    width: 100%;
+    height: 100%;
   }
 `);

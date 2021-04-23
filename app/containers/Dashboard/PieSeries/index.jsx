@@ -2,11 +2,6 @@ import React, { memo, useCallback, useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   Chart,
-  BarSeries,
-  LineSeries,
-  ArgumentAxis,
-  ValueAxis,
-  Title,
   Legend,
   PieSeries,
   Tooltip,

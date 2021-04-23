@@ -81,7 +81,7 @@ export const authorizedRoutes = [
     component: Contact,
   },
   {
-    path: "/tai-khoan",
+    path: "/tai-khoan/:id",
     exact: true,  
     component: Account,
   },

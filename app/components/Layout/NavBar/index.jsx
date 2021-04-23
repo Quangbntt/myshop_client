@@ -21,6 +21,7 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
     },
     [history]
   );
+  
   const _handleLogOut = useCallback(() => {
     _forwardTo("/");
     onLogOut();
@@ -37,6 +38,10 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
   const handleCancel = () => {
     setVisible(false);
   };
+  const clickAccount = (e) => {
+    let url = "/tai-khoan/" + e;
+    history.push(url);
+  }
 
   return (
     <>
@@ -162,7 +167,7 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
                       {proFile.adm_name && <b>Chào, {proFile.adm_name}</b>}
                     </a>
                     <div className="dropdown-menu">
-                      <a href="/tai-khoan" className="dropdown-item">
+                      <a onClick={() => clickAccount(proFile.adm_id)} className="dropdown-item">
                         Tài khoản của tôi
                       </a>
                       <a onClick={logOut} className="dropdown-item">

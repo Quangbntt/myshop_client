@@ -28,10 +28,10 @@ function Footer({ className, pathName }) {
     });
   };
   const onSelect = () => {
-    console.log("1");
+    console.log("onSelect");
   };
   const onChange = () => {
-    console.log("2");
+    console.log("onChange");
   };
 
   const boweload = useCallback(async () => {

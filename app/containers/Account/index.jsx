@@ -25,7 +25,9 @@ const Account = ({ className }) => {
     data: {},
   });
   const [data, setData] = useState([]);
+  const [dataShipPlace, setDataShipPlace] = useState([]);
   const [totalLength, setTotalLength] = useState(0);
+  const [shipPlaceLength, setShipPlaceLength] = useState(0);
   const [show, setShow] = useState({ disabled: true });
   const [params, setParams] = useState({
     id: slug_id.id,
@@ -48,15 +50,28 @@ const Account = ({ className }) => {
       setLoading(false);
       setTotalLength(_.get(result, "value.total"));
       let arrData = _.get(result, "value");
-      _.map(arrData, (item , key) => {
+      _.map(arrData, (item, key) => {
         item.birthday = moment(item.birthday);
-      })
+      });
       setData(arrData);
       setRow((preState) => {
         let nextState = { ...preState };
         nextState.data = arrData[0];
         return nextState;
       });
+    }
+
+    let resultShipPlace = await ServiceBase.requestJson({
+      url: "/shipplace/ship-place",
+      method: "GET",
+      data: newParams,
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+    } else {
+      setShipPlaceLength(_.get(resultShipPlace, "value.total"));
+      let arrShipPlace = _.get(resultShipPlace, "value.data");
+      setDataShipPlace(arrShipPlace);
     }
   }, [params]);
   useEffect(() => {
@@ -71,28 +86,34 @@ const Account = ({ className }) => {
             [className]: true,
           })}
         >
-          <div className="breadcrumb-wrap">
-            <div className="container-fluid">
-              <ul className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <a href="/">Trang chủ</a>
-                </li>
-                <li className="breadcrumb-item active">Tài khoản của tôi</li>
-              </ul>
+          <Spin spinning={loading} tip="Đang lấy dữ liệu...">
+            <div className="breadcrumb-wrap">
+              <div className="container-fluid">
+                <ul className="breadcrumb">
+                  <li className="breadcrumb-item">
+                    <a href="/">Trang chủ</a>
+                  </li>
+                  <li className="breadcrumb-item active">Tài khoản của tôi</li>
+                </ul>
+              </div>
             </div>
-          </div>
-          {data.length > 0 && (
-            <List
-              data={data}
-              setParams={setParams}
-              params={params}
-              row={row}
-              show={show}
-              setShow={setShow}
-              slug_id={slug_id}
-            />
-          )}
-          <Footer />
+            {data.length > 0 && (
+              <List
+                data={data}
+                setParams={setParams}
+                params={params}
+                row={row}
+                show={show}
+                setShow={setShow}
+                slug_id={slug_id}
+                shipPlaceLength={shipPlaceLength}
+                setShipPlaceLength={setShipPlaceLength}
+                dataShipPlace={dataShipPlace}
+                setLoading={setLoading}
+              />
+            )}
+            <Footer />
+          </Spin>
         </div>
       ) : (
         <Home />

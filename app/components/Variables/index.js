@@ -92,7 +92,7 @@ export const color = {
   haiVan: {
     default: "#333",
     primary: "#58595b",
-    bg: "#ffc20e",
+    bg: "#FF6F61",
     border: "#CC9800",
     input: {
       border: "#dcdcdc",

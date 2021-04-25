@@ -33,11 +33,22 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { $Cookies } from "utils/cookies";
 import { storage } from "../../../firebase/index";
 import ServiceBase from "utils/ServiceBase";
+import Address from "../Address";
 
 const dateFormat = "DD-MM-YYYY";
 
 const List = memo(
-  ({ className, data, setParams, row, slug_id, show, setShow }) => {
+  ({
+    className,
+    data,
+    setParams,
+    row,
+    slug_id,
+    show,
+    setShow,
+    dataShipPlace,
+    setLoading
+  }) => {
     const logOut = () => {
       $Cookies.remove("authorization_boc");
       $Cookies.remove("ERP_REPORT");
@@ -542,153 +553,7 @@ const List = memo(
                       eget arcu rhoncus scelerisque.
                     </p>
                   </div>
-                  <div
-                    className="tab-pane fade"
-                    id="address-tab"
-                    role="tabpanel"
-                    aria-labelledby="address-nav"
-                  >
-                    <Row>
-                      <Col span={8}>
-                        <h4>Địa chỉ của tôi</h4>
-                      </Col>
-                      <Col span={4} offset={12}>
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          danger
-                          style={{
-                            padding: "10px 20px 10px 20px",
-                            float: "right",
-                            height: "100%",
-                          }}
-                        >
-                          <i class="fas fa-plus" /> &nbsp; Thêm mới
-                        </Button>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Divider style={{ margin: "16px 0px" }} />
-                      <Col
-                        sm={4}
-                        md={4}
-                        xs={4}
-                        lg={4}
-                        style={{ textAlign: "right", paddingRight: "20px" }}
-                      >
-                        <p>Họ & Tên</p>
-                        <p>Số Điện Thoại</p>
-                        <p>Địa Chỉ</p>
-                      </Col>
-                      <Col sm={16} md={16} xs={16} lg={16}>
-                        <p>
-                          123 Payment Street, Los Angeles, CA{" "}
-                          <Tag color="#87d068">Mặc định</Tag>
-                        </p>
-                        <p>Mobile: 012-345-6789</p>
-                        <p>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Atque dolorem est tenetur incidunt? Officiis cum
-                          et laboriosam, in accusantium recusandae quaerat
-                          reprehenderit animi veritatis praesentium, doloremque
-                          consequuntur corporis consectetur nobis.
-                        </p>
-                      </Col>
-                      <Col
-                        sm={4}
-                        md={4}
-                        xs={4}
-                        lg={4}
-                        style={{ textAlign: "right" }}
-                      >
-                        <Space size="middle">
-                          <Tooltip placement="topLeft" title="Sửa">
-                            <Button
-                              type="link"
-                              icon={<EditOutlined />}
-                              // onClick={(e) => onEdit(row)}
-                            />
-                          </Tooltip>
-                          <Tooltip placement="topLeft" title="Xóa">
-                            <Button
-                              type="link"
-                              icon={<DeleteOutlined />}
-                              // onClick={() => onDelete(row)}
-                            />
-                          </Tooltip>
-                        </Space>
-                        <Button
-                          danger
-                          style={{
-                            padding: "5px 10px 5px 10px",
-                            float: "right",
-                            marginTop: "10px",
-                          }}
-                        >
-                          Thiết lập mặc định
-                        </Button>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Divider style={{ margin: "16px 0px" }} />
-                      <Col
-                        sm={4}
-                        md={4}
-                        xs={4}
-                        lg={4}
-                        style={{ textAlign: "right", paddingRight: "20px" }}
-                      >
-                        <p>Họ & Tên</p>
-                        <p>Số Điện Thoại</p>
-                        <p>Địa Chỉ</p>
-                      </Col>
-                      <Col sm={16} md={16} xs={16} lg={16}>
-                        <p>123 Payment Street, Los Angeles, CA</p>
-                        <p>Mobile: 012-345-6789</p>
-                        <p>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Atque dolorem est tenetur incidunt? Officiis cum
-                          et laboriosam, in accusantium recusandae quaerat
-                          reprehenderit animi veritatis praesentium, doloremque
-                          consequuntur corporis consectetur nobis.
-                        </p>
-                      </Col>
-                      <Col
-                        sm={4}
-                        md={4}
-                        xs={4}
-                        lg={4}
-                        style={{ textAlign: "right" }}
-                      >
-                        <Space size="middle">
-                          <Tooltip placement="topLeft" title="Sửa">
-                            <Button
-                              type="link"
-                              icon={<EditOutlined />}
-                              // onClick={(e) => onEdit(row)}
-                            />
-                          </Tooltip>
-                          <Tooltip placement="topLeft" title="Xóa">
-                            <Button
-                              type="link"
-                              icon={<DeleteOutlined />}
-                              // onClick={() => onDelete(row)}
-                            />
-                          </Tooltip>
-                        </Space>
-                        <Button
-                          danger
-                          style={{
-                            padding: "5px 10px 5px 10px",
-                            float: "right",
-                            marginTop: "10px",
-                          }}
-                        >
-                          Thiết lập mặc định
-                        </Button>
-                      </Col>
-                    </Row>
-                  </div>
+                  <Address dataShipPlace={dataShipPlace} setParams={setParams} setLoading={setLoading} />
                   <div
                     className="tab-pane fade"
                     id="account-tab"

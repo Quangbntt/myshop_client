@@ -68,6 +68,7 @@ const Slide = memo(({ className }) => {
         className="row align-items-center review-slider normal-slider header-slider"
       >
         {_.map(data, (item, key) => {
+          var url = "/chi-tiet-" + item.product_id + "/" + item.product_name;
           return (
             <div className="header-slider-item" key={key}>
               <img
@@ -77,9 +78,9 @@ const Slide = memo(({ className }) => {
               />
               <div className="header-slider-caption">
                 <p>{item.product_name}</p>
-                <a className="btn" href="">
+                <a className="btn" href={url}>
                   <i className="fa fa-shopping-cart" />
-                  Shop Now
+                  Mua ngay
                 </a>
               </div>
             </div>

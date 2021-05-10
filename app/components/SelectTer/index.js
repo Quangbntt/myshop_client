@@ -68,7 +68,6 @@ const SelectSon = ({
     setFetching(false);
     setData(newData);
   });
-  console.log('fetching',fetching)
   useEffect(() => {
     if (validateCell && !value.key) {
       setBorder("1px solid red");
@@ -109,7 +108,6 @@ const SelectSon = ({
       style={{ width: "100%", border: border }}
     >
       {data.map((item) => (
-        console.log(item),
         <Select.Option
           value={item.key}
           key={item.key}

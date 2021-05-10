@@ -1,13 +1,5 @@
 import React, { memo, useState, useEffect, useCallback } from "react";
-import {
-  Spin,
-  Button,
-  Form,
-  Select,
-  Modal,
-  Row,
-  Col,
-} from "antd";
+import { Spin, Button, Form, Select, Modal, Row, Col } from "antd";
 import _ from "lodash";
 import {
   CloseOutlined,
@@ -20,14 +12,64 @@ import { Ui } from "utils/Ui";
 import ServiceBase from "utils/ServiceBase";
 import TextArea from "antd/lib/input/TextArea";
 import { useParams } from "react-router";
+import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+import topng from "images/10680260701556280914-128.png";
 
 const { Option } = Select;
 let time = null;
 const ModalCreate = memo(
   ({ visible, setVisible, setRow, row, data, setData, setParams }) => {
     const [form] = Form.useForm();
+    const [marker, setMarker] = useState({ lat: undefined, lng: undefined });
     const user_id = useParams();
     const [objForm, setObjForm] = useState({});
+    const [center, setCenter] = useState({
+      lat: 0,
+      lng: 0,
+    });
+    const [nameP, setNameP] = useState("");
+    const [address, setAddress] = useState("");
+    const handleSelect = async (value) => {
+      form.setFieldsValue({ "address": value });
+      const results = await geocodeByAddress(value);
+      console.log("resultsresults", results);
+      const latLng = await getLatLng(results[0]);
+      setAddress(value);
+      // onSelectAddress(value);
+      setMarker({ lat: latLng.lat, lng: latLng.lng });
+      // onClickAddress({ lat: latLng.lat, lng: latLng.lng });
+      setCenter({ lat: latLng.lat, lng: latLng.lng });
+      setNameP(value);
+    };
+    const handleChange = (value) => {
+      console.log("valuevalue", value);
+      setAddress(value);
+    };
+    const mapClicked = (mapProps, map, clickEvent) => {
+      const latMarkers = clickEvent.latLng.lat();
+      const lngMarkers = clickEvent.latLng.lng();
+      setMarker({ lat: latMarkers, lng: lngMarkers });
+      onClickAddress({ lat: latMarkers, lng: lngMarkers });
+      setCenter({ lat: latLng.lat, lng: latLng.lng });
+      const address = document.getElementById("address").value;
+      geocoder.geocode({ address: address }, function(results, status) {
+        if (status == "OK") {
+          map.setCenter(results[0].geometry.location);
+          const marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location,
+          });
+        } else {
+          alert(
+            "Geocode was not successful for the following reason: " + status
+          );
+        }
+      });
+    };
     const handleOk = () => {
       setVisible((preState) => {
         let nextState = { ...preState };
@@ -48,22 +90,25 @@ const ModalCreate = memo(
 
     const onFinish = async (values) => {
       let row = _.get(visible, "data");
-      console.log(row);
       let params = {};
       let url = "";
       if (type === "create") {
         url = "/shipplace/create";
         params = {
           user_id: user_id.id,
-          address: _.get(values, "address"),
+          address: address,
+          lat: center.lat,
+          long: center.lng,
         };
       } else {
         url = "/shipplace/update";
         params = {
           id: row.id,
           user_id: user_id.id,
-          address: _.get(values, "address"),
-        }
+          address: address,
+          lat: center.lat,
+          long: center.lng,
+        };
       }
       let result = await ServiceBase.requestJson({
         url: url,
@@ -103,6 +148,7 @@ const ModalCreate = memo(
       setTimeout(boweload, 0);
     }, [boweload]);
 
+    console.log(address);
     return (
       <Modal
         title={type === "create" ? "Thêm mới địa chỉ" : "Cập nhật địa chỉ"}
@@ -123,17 +169,137 @@ const ModalCreate = memo(
                       { required: true, message: "Vui lòng nhập dữ liệu" },
                     ]}
                   >
-                    <TextArea
-                      placeholder="Địa chỉ"
-                      value={getFieldValue("address")}
-                    />
+                    <PlacesAutocomplete
+                      value={address}
+                      onChange={handleChange}
+                      onSelect={handleSelect}
+                    >
+                      {({
+                        getInputProps,
+                        suggestions,
+                        getSuggestionItemProps,
+                        loading,
+                      }) => (
+                        <div>
+                          <input
+                            style={{ width: 300 }}
+                            {...getInputProps({
+                              placeholder: "Nhập tên địa chỉ...",
+                            })}
+                          />
+                          <div>
+                            {loading && <div>Loading...</div>}
+                            {suggestions.map((suggestion) => {
+                              const style = suggestion.active
+                                ? {
+                                    backgroundColor: "#3C7E55",
+                                    cursor: "pointer",
+                                  }
+                                : {
+                                    backgroundColor: "#ffffff",
+                                    cursor: "pointer",
+                                  };
+                              return (
+                                <div
+                                  {...getSuggestionItemProps(suggestion, {
+                                    style,
+                                  })}
+                                >
+                                  {suggestion.description}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </PlacesAutocomplete>
                   </Form.Item>
                 )}
               </Form.Item>
             </Col>
+            <Col md={24}>
+              <Form.Item shouldUpdate={true} noStyle>
+                {({ getFieldValue }) => (
+                  <Form.Item
+                    name="address"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập dữ liệu" },
+                    ]}
+                  >
+                    <div style={{ height: "50vh" }}>
+                      <div style={{ height: 10 }} />
+                      {/* <div style={{ marginTop: 10 }}>
+                        <PlacesAutocomplete
+                          value={address}
+                          onChange={handleChange}
+                          onSelect={handleSelect}
+                        >
+                          {({
+                            getInputProps,
+                            suggestions,
+                            getSuggestionItemProps,
+                            loading,
+                          }) => (
+                            <div>
+                              <input
+                                style={{ width: 300 }}
+                                {...getInputProps({
+                                  placeholder: "Nhập tên địa chỉ...",
+                                })}
+                              />
+                              <div>
+                                {loading && <div>Loading...</div>}
+                                {suggestions.map((suggestion) => {
+                                  const style = suggestion.active
+                                    ? {
+                                        backgroundColor: "#3C7E55",
+                                        cursor: "pointer",
+                                      }
+                                    : {
+                                        backgroundColor: "#ffffff",
+                                        cursor: "pointer",
+                                      };
+                                  return (
+                                    <div
+                                      {...getSuggestionItemProps(suggestion, {
+                                        style,
+                                      })}
+                                    >
+                                      {suggestion.description}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </PlacesAutocomplete>
+                      </div>
+                      <div style={{ height: 10 }} /> */}
+                      <Map
+                        google={google}
+                        zoom={16}
+                        center={center}
+                        onClick={mapClicked}
+                      >
+                        <Marker
+                          title={nameP}
+                          position={{ lat: marker.lat, lng: marker.lng }}
+                        />
+                        <Marker />
+                      </Map>
+                    </div>
+                  </Form.Item>
+                )}
+              </Form.Item>
+            </Col>
+            <Col md={24} />
           </Row>
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{background: "#FF6F61"}}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ background: "#FF6F61" }}
+            >
               {type === "create" ? "Tạo mới" : "Cập nhật"}
             </Button>
           </Form.Item>
@@ -142,4 +308,6 @@ const ModalCreate = memo(
     );
   }
 );
-export default ModalCreate;
+export default GoogleApiWrapper({
+  apiKey: "AIzaSyA_T393wEGf_fjQbnb6g3gQPU5TMRbcw0M",
+})(ModalCreate);

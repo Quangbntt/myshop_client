@@ -8,9 +8,12 @@ import Home from "containers/Home/Loadable";
 import ProductList from "containers/ProductList/Loadable";
 import ProductDetail from "containers/ProductDetail/Loadable";
 import Cart from "containers/Cart/Loadable";
+import CartOrder from "containers/CartOrder/Loadable";
 import Account from "containers/Account/Loadable";
 import Contact from "containers/Contact/Loadable";
 import Register from "containers/Register/Loadable";
+import New from "containers/New/Loadable";
+import NewDetail from "containers/NewDetail/Loadable";
 
 
 import Profile from "containers/Profile/Loadable";
@@ -61,9 +64,24 @@ export const authorizedRoutes = [
     component: ProductList,
   },
   {
+    path: "/tin-tuc/:id",
+    exact: true,  
+    component: NewDetail,
+  },
+  {
+    path: "/cart",
+    exact: true,  
+    component: CartOrder,
+  },
+  {
     path: "/dang-ky",
     exact: true,  
     component: Register,
+  },
+  {
+    path: "/tin-tuc",
+    exact: true,  
+    component: New,
   },
   {
     path: "/chi-tiet:id/:productName",

@@ -12,93 +12,98 @@ import Pagination from "components/Paginate/index";
 import { totalDetailDate } from "../../utils/helper";
 import MenuClassify from "components/MenuClassify";
 import Footer from "components/Layout/Footer";
+import { $Cookies } from "utils/cookies";
 import List from "./List";
 
 let time = null;
 
 const Home = memo(({ className }) => {
   const [loading, setLoading] = useState(false);
-  const [row, setRow] = useState({
-    data: [],
-    arrKey: [],
-    arrKeyOld: [],
-    dataOld: [],
-    name: undefined,
-    price_from: undefined,
-    price_to: undefined,
-    branch: undefined,
-    // category: undefined,
-  });
-  const [totalLength, setTotalLength] = useState(0);
-
+  const [count, setCount] = useState(1);
+  const [data, setData] = useState([]);
+  const [dataPlace, setDataPlace] = useState([]);
+  const token = JSON.parse($Cookies.get("ERP_REPORT"));
   const [params, setParams] = useState({
-    thang: moment(),
     page: 1,
-    limit: 100,
-    name: undefined,
-    branch: undefined,
-    // category: undefined,
-    price_from: undefined,
-    price_to: undefined,
+    limit: 10,
+    user_id: token.parentId,
   });
 
-  // const boweload = useCallback(async () => {
-  //   let newParams = {
-  //     price_from: params.price_from,
-  //     price_to: params.price_to,
-  //     category: _.get(params, "category.key"),
-  //     branch: _.get(params, "branch.key"),
-  //     page: params.page,
-  //     limit: params.limit,
-  //   };
+  const boweload = useCallback(async () => {
+    let newParams = {
+      user_id: params.user_id,
+      page: params.page,
+      limit: params.limit,
+    };
+    setLoading(true);
+    let result = await ServiceBase.requestJson({
+      url: "/order/list",
+      method: "GET",
+      data: newParams,
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      let i = 0;
+      let arrData = _.map(_.get(result, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setData(arrData);
+    }
 
-  //   setLoading(true);
-  //   let result = await ServiceBase.requestJson({
-  //     url: "/report/report_synthetic",
-  //     method: "GET",
-  //     data: newParams,
-  //   });
-  //   if (result.hasErrors) {
-  //     Ui.showErrors(result.errors);
-  //     setLoading(false);
-  //   } else {
-  //     setLoading(false);
-  //     setTotalLength(_.get(result, "value.total"));
-  //     let arrNew = _.get(result, "value");
-  //     await totalDetailDate(setRow, arrNew);
-  //   }
-  // }, [params]);
-  // useEffect(() => {
-  //   clearTimeout(time);
-  //   time = setTimeout(boweload, 800);
-  // }, [boweload]);
+    let resultPlace = await ServiceBase.requestJson({
+      url: "/shipplace/ship-place",
+      method: "GET",
+      data: { id: params.user_id },
+    });
+    if (resultPlace.hasErrors) {
+      Ui.showErrors(resultPlace.errors);
+    } else {
+      let i = 0;
+      let arrDataPlace = _.map(
+        _.get(resultPlace, "value.data"),
+        (item, index) => {
+          return item;
+        }
+      );
+      setDataPlace(arrDataPlace);
+    }
+  }, [params]);
+  useEffect(() => {
+    clearTimeout(time);
+    time = setTimeout(boweload, 800);
+  }, [boweload]);
   return (
-    <div className={classNames({
-      [className]: true,
-    })}>
+    <div
+      className={classNames({
+        [className]: true,
+      })}
+    >
       <div className="breadcrumb-wrap">
-            <div className="container-fluid">
-                <ul className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="#">Home</a></li>
-                    <li className="breadcrumb-item"><a href="#">Products</a></li>
-                    <li className="breadcrumb-item active">Cart</li>
-                </ul>
-            </div>
+        <div className="container-fluid">
+          <ul className="breadcrumb">
+            <li className="breadcrumb-item">
+              <a href="/">Trang chủ</a>
+            </li>
+            <li className="breadcrumb-item active">Giỏ hàng</li>
+          </ul>
         </div>
-            <List 
-              data={_.get(row, "data")}
-              loading={loading}
-              // grid={grid}
-              setParams={setParams}
-              totalLength={totalLength}
-              // visible={visible}
-              // setVisible={setVisible}
-              setRow={setRow}
-              params={params}
-              row={row}
-              // show={show}
-              // setShow={setShow}
-            />
+      </div>
+      <Spin spinning={loading}>
+        {dataPlace.length > 0 && (
+          <List
+            data={data}
+            count={count}
+            setCount={setCount}
+            setParams={setParams}
+            params={params}
+            dataPlace={dataPlace}
+          />
+        )}
+      </Spin>
       <Footer />
     </div>
   );

@@ -65,7 +65,7 @@ const List = memo(
           <div className="col-lg-8">
             <div className="row">
               {_.map(data, (item, key) => {
-                var url = "chi-tiet-" + item.product_id + "/" + item.product_name;
+                var url = "/chi-tiet-" + item.product_id + "/" + item.product_name;
                 return (
                   <div className="col-md-4" key={key}>
                     <div className="product-item">
@@ -84,9 +84,9 @@ const List = memo(
                           <img src={item.product_image} alt="Product Image" />
                         </a>
                         <div className="product-action">
-                          <a href="#">
+                          {/* <a href="#">
                             <i className="fa fa-cart-plus" />
-                          </a>
+                          </a> */}
                           <a href={url}>
                             <i className="fas fa-eye" />
                           </a>
@@ -97,9 +97,9 @@ const List = memo(
                           {item.product_price.toLocaleString()}
                           <span>vnđ</span>
                         </h3>
-                        <a className="btn" href="">
+                        <a className="btn" href={url}>
                           <i className="fa fa-shopping-cart" />
-                          Buy Now
+                          Mua ngay
                         </a>
                       </div>
                     </div>
@@ -114,14 +114,14 @@ const List = memo(
             />
           </div>
           <div className="col-lg-4 sidebar">
-            <div className="sidebar-widget category">
+            {/* <div className="sidebar-widget category">
               <MenuClassify />
-            </div>
+            </div> */}
             <div className="sidebar-widget widget-slider">
               <h2 className="title">Sản phẩm hot</h2>
               <Slider {...settings} className="sidebar-slider normal-slider">
                 {_.map(dataHot, (item, key) => {
-                  var url = "chi-tiet-" + item.product_id + "/" + item.product_name;
+                  var url = "/chi-tiet-" + item.product_id + "/" + item.product_name;
                   return (
                     <div className="product-item" key={key}>
                       <div className="product-title">
@@ -142,9 +142,9 @@ const List = memo(
                           />
                         </a>
                         <div className="product-action">
-                          <a href="#">
+                          {/* <a href="#">
                             <i className="fa fa-cart-plus" />
-                          </a>
+                          </a> */}
                           <a href={url}>
                             <i className="fas fa-eye" />
                           </a>
@@ -155,9 +155,9 @@ const List = memo(
                           {item.product_price.toLocaleString()}
                           <span>vnđ</span>
                         </h3>
-                        <a className="btn" href="">
+                        <a className="btn" href={url}>
                           <i className="fa fa-shopping-cart" />
-                          Buy Now
+                          Mua ngay
                         </a>
                       </div>
                     </div>

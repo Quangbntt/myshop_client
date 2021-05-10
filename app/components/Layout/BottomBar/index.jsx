@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import React, { memo, useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { Breadcrumb, AutoComplete, Input, Spin } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { defineMessages, FormattedMessage } from "react-intl";
 import ServiceBase from "utils/ServiceBase";
 import Ui from "utils/Ui";
@@ -14,11 +14,14 @@ import classNames from "classnames";
 let time = null;
 const { Option } = AutoComplete;
 function Footer({ className, pathName }) {
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [values, setValues] = useState("");
   const [params, setParams] = useState({
     name: undefined,
   });
+  var dataCart = JSON.parse(localStorage.getItem("CART"));
 
   const onSearch = (e) => {
     setParams((preState) => {
@@ -27,11 +30,25 @@ function Footer({ className, pathName }) {
       return nextState;
     });
   };
-  const onSelect = () => {
-    console.log("onSelect");
+  const onSelect = (e, row) => {
+    // let url = "/chi-tiet-" + e + "/" + row.label;
+    // history.push(url);
+    setParams((preState) => {
+      let nextState = { ...preState };
+      nextState = nextState;
+      return nextState;
+    });
+    // window.location.reload();
   };
-  const onChange = () => {
-    console.log("onChange");
+  const onChange = (e, row) => {
+    let url = "/chi-tiet-" + e + "/" + row.label;
+    setValues((preState) => {
+      let nextState = { ...preState };
+      nextState.name = row.label;
+      nextState.row = row;
+      nextState.url = url;
+      return nextState;
+    });
   };
 
   const boweload = useCallback(async () => {
@@ -40,7 +57,7 @@ function Footer({ className, pathName }) {
       name: params.name,
     };
     let result = await ServiceBase.requestJson({
-      url: "/product/search",
+      url: "/product/search-client",
       method: "GET",
       data: newParams,
     });
@@ -66,7 +83,7 @@ function Footer({ className, pathName }) {
       className={classNames({
         [className]: true,
       })}
-      style={{padding: "0px"}}
+      style={{ padding: "0px" }}
     >
       <div className="bottom-bar">
         <div className="container-fluid">
@@ -83,37 +100,36 @@ function Footer({ className, pathName }) {
                 <Spin spinning={loading}>
                   <AutoComplete
                     dropdownMatchSelectWidth={500}
-                    options={data}
+                    // options={data}
+                    // value={values.name}
                     onSearch={onSearch}
                     onSelect={onSelect}
                     onChange={onChange}
+                    style={{
+                      width: "100%",
+                      height: "40px",
+                      padding: "0 15px",
+                      color: "#666666",
+                      border: "1px solid #ff6f61",
+                      borderRadius: "4px",
+                    }}
                   >
-                    <Input.Search
-                      style={{
-                        width: "100%",
-                        height: "40px",
-                        padding: "0 15px",
-                        color: "#666666",
-                        border: "1px solid #ff6f61",
-                        borderRadius: "4px",
-                      }}
-                      type="text"
-                      size="large"
-                      placeholder="Search"
-                    />
+                    {data.map((item, key) => (
+                      <Option key={item.value} value={item.label}>
+                        <a href={"/chi-tiet-" + item.value + "/" + item.label}>
+                          {item.label}
+                        </a>
+                      </Option>
+                    ))}
                   </AutoComplete>
                 </Spin>
-                {/* <input type="text" placeholder="Search" />
-                <button>
-                  <i className="fa fa-search" />
-                </button> */}
               </div>
             </div>
             <div className="col-md-3 col-4">
               <div className="user">
                 <a href="/gio-hang" className="btn cart">
                   <i className="fa fa-shopping-cart" />
-                  <span>(0)</span>
+                  {/* <span>({dataCart ? dataCart.length : 0})</span> */}
                 </a>
               </div>
             </div>

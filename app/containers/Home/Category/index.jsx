@@ -22,7 +22,7 @@ const Category = memo(({ className, setParams, data, params }) => {
                             <div className="category-item ch-400">
                                 <img src={Category3} />
                                 <a className="category-name" href="">
-                                    <p>Some text goes here that describes the image</p>
+                                    <p>Mang lại cảm giác thoải mái khi mặc</p>
                                 </a>
                             </div>
                         </div>
@@ -30,13 +30,13 @@ const Category = memo(({ className, setParams, data, params }) => {
                             <div className="category-item ch-250">
                                 <img src={Category4} />
                                 <a className="category-name" href="">
-                                    <p>Some text goes here that describes the image</p>
+                                    <p>Thỏa sức kết hợp với phụ kiện</p>
                                 </a>
                             </div>
                             <div className="category-item ch-150">
                                 <img src={Category5} />
                                 <a className="category-name" href="">
-                                    <p>Some text goes here that describes the image</p>
+                                    <p>Thỏa sức kết hợp với phụ kiện</p>
                                 </a>
                             </div>
                         </div>
@@ -44,13 +44,13 @@ const Category = memo(({ className, setParams, data, params }) => {
                             <div className="category-item ch-150">
                                 <img src={Category6} />
                                 <a className="category-name" href="">
-                                    <p>Some text goes here that describes the image</p>
+                                    <p>Quà tặng hấp dẫn</p>
                                 </a>
                             </div>
                             <div className="category-item ch-250">
                                 <img src={Category7} />
                                 <a className="category-name" href="">
-                                    <p>Some text goes here that describes the image</p>
+                                    <p>Thường xuyên tổ chức sự kiện giảm giá</p>
                                 </a>
                             </div>
                         </div>
@@ -58,7 +58,7 @@ const Category = memo(({ className, setParams, data, params }) => {
                             <div className="category-item ch-400">
                                 <img src={Category8} />
                                 <a className="category-name" href="">
-                                    <p>Some text goes here that describes the image</p>
+                                    <p>Thời trang tạo nên phong cách</p>
                                 </a>
                             </div>
                         </div>

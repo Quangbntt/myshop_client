@@ -25,8 +25,8 @@ function Footer({ className, pathName }) {
                         <div className="footer-widget">
                             <h2>Liên hệ</h2>
                             <div className="contact-info">
-                                <p><i className="fa fa-map-marker"></i>123 E Store, Los Angeles, USA</p>
-                                <p><i className="fa fa-envelope"></i>email@example.com</p>
+                                <p><i className="fa fa-map-marker"></i>125 Hoàng Ngân, Trung Hòa, Cầu Giấy</p>
+                                <p><i className="fa fa-envelope"></i>qstore@gmail.com</p>
                                 <p><i className="fa fa-phone"></i>+123-456-7890</p>
                             </div>
                         </div>
@@ -51,9 +51,9 @@ function Footer({ className, pathName }) {
                         <div className="footer-widget">
                             <h2>Về chúng tôi</h2>
                             <ul>
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Terms & Condition</a></li>
+                                <li><a href="#">Thông tin</a></li>
+                                <li><a href="#">Chính sách bảo mật</a></li>
+                                <li><a href="#">Đội ngũ quản lý</a></li>
                             </ul>
                         </div>
                     </div>
@@ -62,9 +62,9 @@ function Footer({ className, pathName }) {
                         <div className="footer-widget">
                             <h2>Chính sách</h2>
                             <ul>
-                                <li><a href="#">Pyament Policy</a></li>
-                                <li><a href="#">Shipping Policy</a></li>
-                                <li><a href="#">Return Policy</a></li>
+                                <li><a href="#">Thanh toán</a></li>
+                                <li><a href="#">Ship hàng</a></li>
+                                <li><a href="#">Đổi hàng</a></li>
                             </ul>
                         </div>
                     </div>

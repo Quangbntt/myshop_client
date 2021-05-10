@@ -53,7 +53,6 @@ export default class ServiceBase {
             responseType: "blob",
           })
             .then((response) => {
-              console.log(response);
               const url = window.URL.createObjectURL(
                 new Blob([response.value])
               );
@@ -130,7 +129,6 @@ export function requestJsonGet(options) {
         params: options.data,
       })
       .then((response) => {
-        console.log("response1", response);
         return response;
       })
       .catch((err) => {

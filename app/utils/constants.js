@@ -3,6 +3,7 @@ export const DAEMON = '@@saga-injector/daemon';
 export const ONCE_TILL_UNMOUNT = '@@saga-injector/once-till-unmount';
 export const JWT_TOKEN = 'authorization_boc';
 export const ERP_REPORT = 'ERP_REPORT';
+export const Order = 'Order';
 export const APP_PARAM = 'APP_PARAM';
 export const DEFAULT_RESPONSE_MESSAGE = {
   500: 'Không lấy được dữ liệu.',
@@ -29,3 +30,4 @@ export const CONTRACT_TYPE = {
   2: 'Lộ trình không cố định',
   2.1: 'Thuê xe tour',
 };
+

@@ -65,7 +65,7 @@ const List = memo(({ className, setParams, data, params }) => {
                 fontSize: "16px",
               }}
             >
-              Some text goes here that describes the image
+              Thời trang đột phá phong cách
             </p>
           </a>
         </div>
@@ -110,7 +110,7 @@ const List = memo(({ className, setParams, data, params }) => {
                 fontSize: "16px",
               }}
             >
-              Some text goes here that describes the image
+              Phù hợp với mọi lứa tuổi
             </p>
           </a>
         </div>

@@ -8,32 +8,25 @@ import * as style from "components/Variables";
 import classNames from "classnames";
 import { Ui } from "utils/Ui";
 import ServiceBase from "utils/ServiceBase";
-import Pagination from "components/Paginate/index";
 import MenuClassify from "components/MenuClassify";
-import Slide from "./Slide";
-import News from "./News";
-import Branch from "components/Branch";
+import Pagination from "components/Paginate/index";
+import List from "./List/index";
 import Footer from "components/Layout/Footer";
-import Feature from "./Feature";
-import Category from "./Category";
-import ActionCall from "./ActionCall";
-import FeatureProduct from "./FeatureProduct";
-import RecentProduct from "./RecentProduct";
-import Feedback from "./Feedback";
-import LoadingBar from 'react-top-loading-bar';
-import {bindActionCreators} from "redux";
+
+import LoadingBar from "react-top-loading-bar";
+import { bindActionCreators } from "redux";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 import {
   makeSelectIsAuthenticated,
   makeSelectAppConfig,
-  makeActionPro
+  makeActionPro,
 } from "containers/App/selectors";
 import { actionProgress } from "containers/App/actions";
 let time = null;
 
-const Home = ({dataProgress, actionProgress }) => {
+const Home = ({ dataProgress, actionProgress }) => {
   const [loading, setLoading] = useState(false);
   const [row, setRow] = useState({
     data: [],
@@ -41,21 +34,24 @@ const Home = ({dataProgress, actionProgress }) => {
     arrKeyOld: [],
     dataOld: [],
   });
+  const [data, setData] = useState([]);
+  const [dataTop, setDataTop] = useState([]);
+  const [dataDesc, setDataDesc] = useState([]);
   const [totalLength, setTotalLength] = useState(0);
   const [progress, setProgress] = useState(0);
   const [params, setParams] = useState({
     page: 1,
-    limit: 100,
+    limit: 10,
   });
 
   const boweload = useCallback(async () => {
     let newParams = {
       page: params.page,
-      limit: params.limit,
+      size: params.limit,
     };
     setLoading(true);
     let result = await ServiceBase.requestJson({
-      url: "/product/all",
+      url: "/news/list",
       method: "GET",
       data: newParams,
     });
@@ -66,6 +62,47 @@ const Home = ({dataProgress, actionProgress }) => {
       setLoading(false);
       setProgress(100);
       setTotalLength(_.get(result, "value.total"));
+      let i = 0;
+      let arrData = _.map(_.get(result, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setData(arrData);
+    }
+
+    let resultTop = await ServiceBase.requestJson({
+      url: "/news/new",
+      method: "GET",
+      data: newParams,
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+    } else {
+      let i = 0;
+      let arrDataTop = _.map(_.get(resultTop, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setDataTop(arrDataTop);
+    }
+
+    let resultDesc = await ServiceBase.requestJson({
+      url: "/news/list-desc",
+      method: "GET",
+      data: {},
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+    } else {
+      let i = 0;
+      let arrDataDesc = _.map(
+        _.get(resultDesc, "value.data"),
+        (item, index) => {
+          item.key = i++;
+          return item;
+        }
+      );
+      setDataDesc(arrDataDesc);
     }
   }, [params]);
   useEffect(() => {
@@ -76,44 +113,36 @@ const Home = ({dataProgress, actionProgress }) => {
   return (
     <>
       <LoadingBar
-        color='#f11946'
+        color="#f11946"
         progress={progress}
         onLoaderFinished={() => setProgress(0)}
       />
       <div className="header">
         <div className="container-fluid">
-          <div className="row" style={{ marginBottom: "30px" }}>
-            <div className="col-md-3">
-              <MenuClassify />
-            </div>
-            <div className="col-md-6">
-              <Slide />
-            </div>
-            <div className="col-md-3">
-              <News />
-            </div>
-          </div>
+          {dataTop.length > 0 && (
+            <List
+              data={data}
+              setParams={setParams}
+              dataDesc={dataDesc}
+              dataTop={dataTop}
+              params={params}
+              totalLength={totalLength}
+            />
+          )}
         </div>
       </div>
-      <Branch />
-      <Feature />
-      <Category />
-      <ActionCall />
-      <FeatureProduct />
-      <RecentProduct />
-      <Feedback />
       <Footer />
     </>
   );
 };
 const mapStateToProps = createStructuredSelector({
-  dataProgress:makeActionPro()
+  dataProgress: makeActionPro(),
 });
 
-const mapDispatchToProps = (dispatch)=>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      actionProgress
+      actionProgress,
     },
     dispatch
   );
@@ -121,8 +150,7 @@ const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps
 );
-export default (
-  compose(
-    withConnect,
-    memo
-  )(Home));
+export default compose(
+  withConnect,
+  memo
+)(Home);

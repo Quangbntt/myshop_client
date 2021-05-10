@@ -24,12 +24,12 @@ function MenuClassify({ className, pathName }) {
                     <li className="nav-item">
                         <a className="nav-link" href="#"><i className="fas fa-female"></i> Nữ</a>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                         <a className="nav-link" href="#"><i className="fas fa-headphones-alt"></i> Phụ kiện</a>
-                    </li>
-                    <li className="nav-item">
+                    </li> */}
+                    {/* <li className="nav-item">
                         <a className="nav-link" href="#"><i className="fas fa-gifts"></i> Bộ sưu tập</a>
-                    </li>
+                    </li> */}
                 </ul>
             </nav>
         </>

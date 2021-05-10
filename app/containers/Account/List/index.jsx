@@ -34,6 +34,7 @@ import { $Cookies } from "utils/cookies";
 import { storage } from "../../../firebase/index";
 import ServiceBase from "utils/ServiceBase";
 import Address from "../Address";
+import Order from "../Order";
 
 const dateFormat = "DD-MM-YYYY";
 
@@ -47,7 +48,9 @@ const List = memo(
     show,
     setShow,
     dataShipPlace,
-    setLoading
+    setLoading,
+    dataOrder,
+    params,
   }) => {
     const logOut = () => {
       $Cookies.remove("authorization_boc");
@@ -76,7 +79,7 @@ const List = memo(
         range: "${label} phải trong khoảng ${min} đến ${max}",
       },
     };
-    const [input, setInput] = useState(data[0].about_me);
+    const [input, setInput] = useState(data.length > 0 && data[0].about_me);
     const onChangeProfile = (e) => {
       setInput(e.target.value);
     };
@@ -121,7 +124,9 @@ const List = memo(
     };
 
     const [image, setImage] = useState("");
-    const [urlImage, setUrlImage] = useState(data[0].user_image);
+    const [urlImage, setUrlImage] = useState(
+      data.length > 0 && data[0].user_image
+    );
 
     const handleChange = (e) => {
       if (e.target.files[0]) {
@@ -183,7 +188,6 @@ const List = memo(
     useEffect(() => {
       setTimeout(boweload, 0);
     }, [boweload]);
-
     return (
       <div
         className={classNames({
@@ -219,7 +223,7 @@ const List = memo(
                     <i className="fa fa-shopping-bag" />
                     Đơn hàng
                   </a>
-                  <a
+                  {/* <a
                     className="nav-link"
                     id="payment-nav"
                     data-toggle="pill"
@@ -228,7 +232,7 @@ const List = memo(
                   >
                     <i className="fa fa-credit-card" />
                     Ngân hàng
-                  </a>
+                  </a> */}
                   <a
                     className="nav-link"
                     id="address-nav"
@@ -239,7 +243,7 @@ const List = memo(
                     <i className="fa fa-map-marker-alt" />
                     Địa chỉ
                   </a>
-                  <a
+                  {/* <a
                     className="nav-link"
                     id="account-nav"
                     data-toggle="pill"
@@ -248,7 +252,7 @@ const List = memo(
                   >
                     <i className="fas fa-bell" />
                     Thông báo
-                  </a>
+                  </a> */}
                   <a className="nav-link" onClick={logOut}>
                     <i className="fa fa-sign-out-alt" />
                     Logout
@@ -330,7 +334,9 @@ const List = memo(
                           <Form.Item shouldUpdate={true} noStyle>
                             {({ getFieldValue }) => (
                               <Form.Item name="sex" label="Giới tính">
-                                <Radio.Group value={data[0].sex}>
+                                <Radio.Group
+                                  value={data.length > 0 && data[0].sex}
+                                >
                                   <Radio value={1}>Nữ</Radio>
                                   <Radio value={2}>Nam</Radio>
                                   <Radio value={3}>Khác</Radio>
@@ -405,6 +411,7 @@ const List = memo(
                               listType="picture"
                               action={handleUpload}
                               maxCount={1}
+                              value={image}
                               showUploadList={false}
                             >
                               <Button>Chọn ảnh</Button>
@@ -434,7 +441,9 @@ const List = memo(
                                 />
                                 <div className="text-rating">
                                   <Input
-                                    defaultValue={data[0].about_me}
+                                    defaultValue={
+                                      data.length > 0 && data[0].about_me
+                                    }
                                     disabled={show.disabled}
                                     onChange={(e) => onChangeProfile(e)}
                                   />
@@ -483,59 +492,12 @@ const List = memo(
                       </Col>
                     </Row>
                   </div>
-                  <div
-                    className="tab-pane fade"
-                    id="orders-tab"
-                    role="tabpanel"
-                    aria-labelledby="orders-nav"
-                  >
-                    <div className="table-responsive">
-                      <table className="table table-bordered">
-                        <thead className="thead-dark">
-                          <tr>
-                            <th>No</th>
-                            <th>Product</th>
-                            <th>Date</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>1</td>
-                            <td>Product Name</td>
-                            <td>01 Jan 2020</td>
-                            <td>$99</td>
-                            <td>Approved</td>
-                            <td>
-                              <button className="btn">View</button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>2</td>
-                            <td>Product Name</td>
-                            <td>01 Jan 2020</td>
-                            <td>$99</td>
-                            <td>Approved</td>
-                            <td>
-                              <button className="btn">View</button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>3</td>
-                            <td>Product Name</td>
-                            <td>01 Jan 2020</td>
-                            <td>$99</td>
-                            <td>Approved</td>
-                            <td>
-                              <button className="btn">View</button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  <Order
+                    dataOrder={dataOrder}
+                    setParams={setParams}
+                    setLoading={setLoading}
+                    params={params}
+                  />
                   <div
                     className="tab-pane fade"
                     id="payment-tab"
@@ -553,7 +515,11 @@ const List = memo(
                       eget arcu rhoncus scelerisque.
                     </p>
                   </div>
-                  <Address dataShipPlace={dataShipPlace} setParams={setParams} setLoading={setLoading} />
+                  <Address
+                    dataShipPlace={dataShipPlace}
+                    setParams={setParams}
+                    setLoading={setLoading}
+                  />
                   <div
                     className="tab-pane fade"
                     id="account-tab"

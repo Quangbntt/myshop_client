@@ -20,6 +20,7 @@ const Home = memo(({ className }) => {
   const [loading, setLoading] = useState(false);
   const [totalLength, setTotalLength] = useState(0);
   const [data, setData] = useState([]);
+  const [dataRate, setDataRate] = useState([]);
   const [dataSame, setDataSame] = useState([]);
   const [dataHot, setDataHot] = useState([]);
   const [dataBranch, setDataBranch] = useState([]);
@@ -107,6 +108,24 @@ const Home = memo(({ className }) => {
       });
       setDataBranch(arrBranch);
     }
+
+    let rate = await ServiceBase.requestJson({
+      url: "/feedback-product/list",
+      method: "GET",
+      data: { product_id: idUrl, page: params.page, limit: params.limit },
+    });
+    if (rate.hasErrors) {
+      Ui.showErrors(rate.errors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      let i = 0;
+      let arrRate = _.map(_.get(rate, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setDataRate(arrRate);
+    }
   }, [params]);
   useEffect(() => {
     clearTimeout(time);
@@ -122,10 +141,10 @@ const Home = memo(({ className }) => {
         <div className="container-fluid">
           <ul className="breadcrumb">
             <li className="breadcrumb-item">
-              <a href="#">Trang chủ</a>
+              <a href="/">Trang chủ</a>
             </li>
             <li className="breadcrumb-item">
-              <a href="#">Sản phẩm</a>
+              <a href="/san-pham">Sản phẩm</a>
             </li>
             <li className="breadcrumb-item active">Chi tiết sản phẩm</li>
           </ul>
@@ -147,6 +166,7 @@ const Home = memo(({ className }) => {
                 dataBranch={dataBranch}
                 setDataBranch={setDataBranch}
                 dataSame={dataSame}
+                dataRate={dataRate}
               />
             )}
           </Spin>

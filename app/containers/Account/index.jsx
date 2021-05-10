@@ -26,20 +26,24 @@ const Account = ({ className }) => {
   });
   const [data, setData] = useState([]);
   const [dataShipPlace, setDataShipPlace] = useState([]);
+  const [dataOrder, setDataOrder] = useState([]);
   const [totalLength, setTotalLength] = useState(0);
   const [shipPlaceLength, setShipPlaceLength] = useState(0);
+  const [orderLength, setOrderLength] = useState(0);
   const [show, setShow] = useState({ disabled: true });
   const [params, setParams] = useState({
     id: slug_id.id,
+    size: 100,
   });
 
   const boweload = useCallback(async () => {
     let newParams = {
       id: params.id,
+      size: params.size,
     };
     setLoading(true);
     let result = await ServiceBase.requestJson({
-      url: "/user/detail/" + newParams.id,
+      url: "/user/detail-client/" + newParams.id,
       method: "GET",
       data: {},
     });
@@ -66,12 +70,25 @@ const Account = ({ className }) => {
       method: "GET",
       data: newParams,
     });
-    if (result.hasErrors) {
-      Ui.showErrors(result.errors);
+    if (resultShipPlace.hasErrors) {
+      Ui.showErrors(resultShipPlace.errors);
     } else {
       setShipPlaceLength(_.get(resultShipPlace, "value.total"));
       let arrShipPlace = _.get(resultShipPlace, "value.data");
       setDataShipPlace(arrShipPlace);
+    }
+
+    let resultOrder = await ServiceBase.requestJson({
+      url: "/order/get-order",
+      method: "GET",
+      data: newParams,
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+    } else {
+      setOrderLength(_.get(resultOrder, "value.total"));
+      let arrOrder = _.get(resultOrder, "value.data");
+      setDataOrder(arrOrder);
     }
   }, [params]);
   useEffect(() => {
@@ -110,6 +127,7 @@ const Account = ({ className }) => {
                 setShipPlaceLength={setShipPlaceLength}
                 dataShipPlace={dataShipPlace}
                 setLoading={setLoading}
+                dataOrder={dataOrder}
               />
             )}
             <Footer />

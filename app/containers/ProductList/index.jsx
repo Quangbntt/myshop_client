@@ -26,7 +26,7 @@ const Home = memo(({ className }) => {
 
   const [params, setParams] = useState({
     page: 1,
-    limit: 100,
+    limit: 10,
     name: undefined,
     branch: undefined,
     price_from: undefined,
@@ -48,7 +48,7 @@ const Home = memo(({ className }) => {
       product: arrProduct,
       branch: arrBranch,
       page: params.page,
-      limit: params.limit,
+      size: params.limit,
     };
 
     setLoading(true);

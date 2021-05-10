@@ -46,7 +46,6 @@ const SelectMultiple = ({
       Ui.showErrors(result.errors);
     } else {
       if (url === "/dieudo/dsnottuyen") {
-        console.log('url',url)
         newData = _.map(_.get(result, "value.data", []), (x) => ({
           key: x.id,
           id: x.didId,

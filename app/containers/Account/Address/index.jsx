@@ -29,9 +29,14 @@ import _ from "lodash";
 import styled from "styled-components";
 import * as style from "components/Variables";
 import { Ui } from "utils/Ui";
-import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import ServiceBase from "utils/ServiceBase";
 import ModalCreate from "./Modal/index";
+
 
 const dateFormat = "DD-MM-YYYY";
 const { confirm } = Modal;
@@ -96,7 +101,6 @@ const List = memo(({ className, dataShipPlace, setParams, setLoading }) => {
     if (result.hasErrors) {
       Ui.showErrors(result.errors);
     } else {
-      console.log(result);
       Ui.showSuccess({ message: "Cập nhật thành công" });
       setParams((preState) => {
         let nextState = { ...preState };
@@ -105,9 +109,14 @@ const List = memo(({ className, dataShipPlace, setParams, setLoading }) => {
       });
     }
   };
+  
   return (
     <>
-      <ModalCreate visible={visible} setVisible={setVisible} setParams={setParams} />
+      <ModalCreate
+        visible={visible}
+        setVisible={setVisible}
+        setParams={setParams}
+      />
       <div
         className="tab-pane fade"
         id="address-tab"
@@ -141,86 +150,93 @@ const List = memo(({ className, dataShipPlace, setParams, setLoading }) => {
             </Button>
           </Col>
         </Row>
-        {_.map(dataShipPlace, (item, key) => {
-          return _.map(item.ship_place, (value, index) => {
-            return (
-              <Row>
-                <Divider style={{ margin: "16px 0px" }} />
-                <Col
-                  sm={4}
-                  md={4}
-                  xs={4}
-                  lg={4}
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "20px",
-                  }}
-                >
-                  <p>Họ & Tên</p>
-                  <p>Số Điện Thoại</p>
-                  <p>Địa Chỉ</p>
-                </Col>
-                <Col sm={16} md={16} xs={16} lg={16}>
-                  <p key={key+1}>
-                    {item.name}
+        {dataShipPlace.length > 0 &&
+          _.map(dataShipPlace, (item, key) => {
+            return _.map(item.ship_place, (value, index) => {
+              return (
+                <Row>
+                  <Divider style={{ margin: "16px 0px" }} />
+                  <Col
+                    sm={4}
+                    md={4}
+                    xs={4}
+                    lg={4}
+                    style={{
+                      textAlign: "right",
+                      paddingRight: "20px",
+                    }}
+                  >
+                    <p>Họ & Tên</p>
+                    <p>Số Điện Thoại</p>
+                    <p>Địa Chỉ</p>
+                  </Col>
+                  <Col sm={16} md={16} xs={16} lg={16}>
+                    <p key={key + 1}>
+                      {item.name}
+                      {value.default == 1 ? (
+                        <Tag style={{ marginLeft: "10px" }} color="#87d068">
+                          Mặc định
+                        </Tag>
+                      ) : (
+                        ""
+                      )}
+                    </p>
+                    <p key={(key + 1) * 100}>{item.phone}</p>
+                    <p key={(key + 1) * 1000}>{value.address}</p>
+                  </Col>
+                  <Col
+                    sm={4}
+                    md={4}
+                    xs={4}
+                    lg={4}
+                    style={{ textAlign: "right" }}
+                  >
+                    <Space size="middle">
+                      <Tooltip placement="topLeft" title="Sửa">
+                        <Button
+                          type="link"
+                          icon={<EditOutlined />}
+                          onClick={(e) => onEdit(value)}
+                        />
+                      </Tooltip>
+                      <Tooltip placement="topLeft" title="Xóa">
+                        <Button
+                          type="link"
+                          icon={<DeleteOutlined />}
+                          onClick={() => onDelete(value)}
+                        />
+                      </Tooltip>
+                    </Space>
                     {value.default == 1 ? (
-                      <Tag style={{ marginLeft: "10px" }} color="#87d068">
-                        Mặc định
-                      </Tag>
+                      <Button
+                        danger
+                        disabled
+                        style={{
+                          padding: "5px 10px 5px 10px",
+                          float: "right",
+                          marginTop: "10px",
+                        }}
+                      >
+                        Thiết lập mặc định
+                      </Button>
                     ) : (
-                      ""
+                      <Button
+                        danger
+                        style={{
+                          padding: "5px 10px 5px 10px",
+                          float: "right",
+                          marginTop: "10px",
+                        }}
+                        onClick={() => onDefault(value, item)}
+                      >
+                        Thiết lập mặc định
+                      </Button>
                     )}
-                  </p>
-                  <p key={(key+1) * 100}>{item.phone}</p>
-                  <p key={(key+1) * 1000}>{value.address}</p>
-                </Col>
-                <Col sm={4} md={4} xs={4} lg={4} style={{ textAlign: "right" }}>
-                  <Space size="middle">
-                    <Tooltip placement="topLeft" title="Sửa">
-                      <Button
-                        type="link"
-                        icon={<EditOutlined />}
-                        onClick={(e) => onEdit(value)}
-                      />
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="Xóa">
-                      <Button
-                        type="link"
-                        icon={<DeleteOutlined />}
-                        onClick={() => onDelete(value)}
-                      />
-                    </Tooltip>
-                  </Space>
-                  {value.default == 1 ? (
-                    <Button
-                      danger
-                      disabled
-                      style={{
-                        padding: "5px 10px 5px 10px",
-                        float: "right",
-                        marginTop: "10px",
-                      }}
-                    >
-                      Thiết lập mặc định
-                    </Button>
-                  ) : (
-                    <Button
-                      danger
-                      style={{
-                        padding: "5px 10px 5px 10px",
-                        float: "right",
-                        marginTop: "10px",
-                      }}
-                      onClick={() => onDefault(value, item)}
-                    >
-                      Thiết lập mặc định
-                    </Button>
-                  )}
-                </Col>
-              </Row>
-            );
-          });
-        })}
+                  </Col>
+                </Row>
+              );
+            });
+          })}
       </div>
     </>
   );

@@ -1,21 +1,15 @@
-import React, { memo, useState, useEffect, useMemo, Component } from "react";
-import {
-  Table,
-  Badge,
-  Menu,
-  Dropdown,
-  Space,
-  Button,
-  Input,
-  Spin,
-  Rate,
-  Row,
-  Col,
-  InputNumber,
-} from "antd";
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useMemo,
+  Component,
+  useCallback,
+} from "react";
+import { Avatar, Rate, Comment, Radio, Tooltip, InputNumber } from "antd";
 import classNames from "classnames";
 import moment from "moment";
-import _ from "lodash";
+import _, { size } from "lodash";
 import styled from "styled-components";
 import * as style from "components/Variables";
 import MenuClassify from "components/MenuClassify";
@@ -24,34 +18,49 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import { $Cookies } from "utils/cookies";
+import ServiceBase from "utils/ServiceBase";
+import { useHistory } from "react-router-dom";
+import { Ui } from "utils/Ui";
+import { bindActionCreators } from "redux";
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import {
+  makeSelectIsAuthenticated,
+  makeSelectAppConfig,
+  makeActionCart,
+} from "containers/App/selectors";
+import { actionCart } from "containers/App/actions";
 
-const baseUrl = "../../images";
 const List = memo(
   ({
     className,
     setParams,
     data,
     params,
-    setData,
     dataHot,
-    setDatHot,
     dataBranch,
-    setDataBranch,
     dataSame,
+    dataRate,
   }) => {
+    data.discount > 0 ? data.discount : 0;
     const images = data.product_more_image;
     const [state, setState] = useState({
       photoIndex: 0,
       isOpen: false,
     });
+    let history = useHistory();
     const [count, setCount] = useState(1);
     const onUpdateQuantity = (quantity) => {
-      if (quantity > 0) {
+      if (quantity > 0 && quantity < data.product_quantity) {
         setCount((preState) => {
           let nextState = { ...preState };
           nextState = quantity;
           return nextState;
         });
+      } else {
+        Ui.showErrors("Số lượng sản phẩm còn lại không đủ");
       }
     };
     const onChangeQuantity = (quantity) => {
@@ -100,6 +109,82 @@ const List = memo(
       slidesToScroll: 1,
       autoplay: true,
       autoplaySpeed: 2000,
+    };
+    const [value, setValue] = useState({
+      size: data.size[0].value,
+      color: data.color[0].value,
+      product_id: data.product_id,
+    });
+    const [color, setColor] = useState();
+    const changeSize = async (e) => {
+      let param = {
+        size_name: e.target.value,
+        product_id: data.product_id,
+      };
+      setValue((preState) => {
+        let nextState = { ...preState };
+        nextState.size = e.target.value;
+        return nextState;
+      });
+      let result = await ServiceBase.requestJson({
+        url: "/product/find-color",
+        method: "GET",
+        data: param,
+      });
+      if (result.hasErrors) {
+        Ui.showErrors(result.errors);
+      } else {
+        let i = 0;
+        let arrData = _.map(_.get(result, "value.data"), (item, index) => {
+          item.key = i++;
+          return item;
+        });
+        setColor(arrData);
+        setParams((preState) => {
+          let nextState = { ...preState };
+          nextState = nextState;
+          return nextState;
+        });
+      }
+    };
+    const changeColor = (e) => {
+      setValue((preState) => {
+        let nextState = { ...preState };
+        nextState.color = e.target.value;
+        return nextState;
+      });
+    };
+    const handleAddProduct = async (item) => {
+      const token = $Cookies.get("ERP_REPORT")
+        ? JSON.parse($Cookies.get("ERP_REPORT"))
+        : "";
+      if (token) {
+        let newParam = {
+          user_id: token.parentId,
+          color: value.color,
+          size_name: value.size,
+          product_id: value.product_id,
+          quantity: count,
+          discount: item.discount
+        };
+        let result = await ServiceBase.requestJson({
+          url: "/order/add-order",
+          method: "POST",
+          data: newParam,
+        });
+        if (result.hasErrors) {
+          Ui.showErrors(result.errors);
+        } else {
+          Ui.showSuccess({ message: "Thêm hàng vào giỏ thành công" });
+          setParams((preState) => {
+            let nextState = { ...preState };
+            nextState = nextState;
+            return nextState;
+          });
+        }
+      } else {
+        history.push("/signin");
+      }
     };
     return (
       <div
@@ -185,7 +270,11 @@ const List = memo(
                         <div className="price">
                           <h4>Giá:</h4>
                           <p>
-                            {(data.product_price * 0.9).toLocaleString()} vnđ
+                            {(
+                              data.product_price -
+                              (data.product_price * data.discount) / 100
+                            ).toLocaleString()}{" "}
+                            vnđ
                             <span>
                               {data.product_price.toLocaleString()} vnđ
                             </span>
@@ -215,36 +304,41 @@ const List = memo(
                         <div className="p-size">
                           <h4>Kích cỡ:</h4>
                           <div className="btn-group btn-group-sm">
-                            {_.map(data.size, (item, key) => {
-                              return (
-                                <button type="button" className="btn">
-                                  {item.size_name}
-                                </button>
-                              );
-                            })}
+                            <Radio.Group
+                              options={data.size}
+                              onChange={changeSize}
+                              // value={value.size}
+                              optionType="button"
+                              buttonStyle="solid"
+                            />
                           </div>
                         </div>
                         <div className="p-color">
                           <h4>Màu sắc:</h4>
                           <div className="btn-group btn-group-sm">
-                            {_.map(data.color, (item, key) => {
-                              return (
-                                <button type="button" className="btn">
-                                  {item.color}
-                                </button>
-                              );
-                            })}
+                            <Radio.Group
+                              options={color}
+                              onChange={changeColor}
+                              // value={
+                              //   value.color
+                              // }
+                              optionType="button"
+                              buttonStyle="solid"
+                            />
                           </div>
                         </div>
                         <div className="action">
-                          <a className="btn" href="#">
+                          <a
+                            className="btn"
+                            onClick={() => handleAddProduct(data)}
+                          >
                             <i className="fa fa-shopping-cart" />
-                            Add to Cart
+                            Thêm vào giỏ
                           </a>
-                          <a className="btn" href="#">
+                          {/* <a className="btn" href="#">
                             <i className="fa fa-shopping-bag" />
-                            Buy Now
-                          </a>
+                            Mua ngay
+                          </a> */}
                         </div>
                       </div>
                     </div>
@@ -263,7 +357,7 @@ const List = memo(
                           Chi tiết
                         </a>
                       </li>
-                      <li className="nav-item">
+                      {/* <li className="nav-item">
                         <a
                           className="nav-link"
                           data-toggle="pill"
@@ -271,14 +365,14 @@ const List = memo(
                         >
                           Specification
                         </a>
-                      </li>
+                      </li> */}
                       <li className="nav-item">
                         <a
                           className="nav-link"
                           data-toggle="pill"
                           href="#reviews"
                         >
-                          Reviews (1)
+                          Reviews ({dataRate.length})
                         </a>
                       </li>
                     </ul>
@@ -288,7 +382,7 @@ const List = memo(
                         <h4>Chi tiết sản phẩm</h4>
                         <p>{data.product_description}</p>
                       </div>
-                      <div id="specification" className="tab-pane fade">
+                      {/* <div id="specification" className="tab-pane fade">
                         <h4>Product specification</h4>
                         <ul>
                           <li>Lorem ipsum dolor sit amet</li>
@@ -297,48 +391,68 @@ const List = memo(
                           <li>Lorem ipsum dolor sit amet</li>
                           <li>Lorem ipsum dolor sit amet</li>
                         </ul>
-                      </div>
+                      </div> */}
                       <div id="reviews" className="tab-pane fade">
-                        <div className="reviews-submitted">
-                          <div className="reviewer">
-                            Phasellus Gravida - <span>01 Jan 2020</span>
-                          </div>
-                          <div className="ratting">
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                          </div>
-                          <p>
-                            Sed ut perspiciatis unde omnis iste natus error sit
-                            voluptatem accusantium doloremque laudantium, totam
-                            rem aperiam.
-                          </p>
-                        </div>
                         <div className="reviews-submit">
-                          <h4>Give your Review:</h4>
-                          <div className="ratting">
-                            <i className="far fa-star" />
-                            <i className="far fa-star" />
-                            <i className="far fa-star" />
-                            <i className="far fa-star" />
-                            <i className="far fa-star" />
-                          </div>
-                          <div className="row form">
-                            <div className="col-sm-6">
-                              <input type="text" placeholder="Name" />
-                            </div>
-                            <div className="col-sm-6">
-                              <input type="email" placeholder="Email" />
-                            </div>
-                            <div className="col-sm-12">
-                              <textarea placeholder="Review" />
-                            </div>
-                            <div className="col-sm-12">
-                              <button>Submit</button>
-                            </div>
-                          </div>
+                          {_.map(dataRate, (item, key) => {
+                            return (
+                              <Comment
+                                // actions={actions}
+                                key={key}
+                                author={item.name}
+                                avatar={
+                                  <Avatar
+                                    src={item.user_image}
+                                    alt={item.name}
+                                  />
+                                }
+                                content={
+                                  <>
+                                    <Rate
+                                      allowHalf
+                                      defaultValue={item.rate}
+                                      disabled={true}
+                                    />
+                                    <p>{item.comment}</p>
+                                    {_.map(item.images, (value, index) => {
+                                      if (value.length < 10) {
+                                        return _.map(value, (v, k) => {
+                                          return (
+                                            <img
+                                              key={k}
+                                              src={v}
+                                              width="60px"
+                                              height="60px"
+                                            />
+                                          );
+                                        });
+                                      } else {
+                                        return (
+                                          <img
+                                            key={index * 100}
+                                            src={value}
+                                            width="60px"
+                                            height="60px"
+                                          />
+                                        );
+                                      }
+                                    })}
+                                  </>
+                                }
+                                datetime={
+                                  <Tooltip
+                                    title={moment(item.created_at).format(
+                                      "YYYY-MM-DD HH:mm:ss"
+                                    )}
+                                  >
+                                    <span>
+                                      {moment(item.created_at).fromNow()}
+                                    </span>
+                                  </Tooltip>
+                                }
+                              />
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -353,7 +467,7 @@ const List = memo(
                     <Slider {...set} style={{ padding: "0px 10px" }}>
                       {_.map(dataSame, (item, key) => {
                         var url =
-                          "chi-tiet-" +
+                          "/chi-tiet-" +
                           item.product_id +
                           "/" +
                           item.product_name;
@@ -372,26 +486,27 @@ const List = memo(
                               </div>
                             </div>
                             <div className="product-image">
-                              <a href="product-detail.html">
+                              <a href="#">
                                 <img
                                   src={item.product_image}
                                   alt={item.product_name}
                                 />
                               </a>
                               <div className="product-action">
-                                <a href="#">
+                                {/* <a href="#">
                                   <i className="fa fa-cart-plus" />
-                                </a>
+                                </a> */}
                                 <a href={url}>
                                   <i className="fas fa-eye" />
                                 </a>
                               </div>
                             </div>
                             <div className="product-price">
-                              <h3>
-                                <span>$</span>99
+                              <h3 style={{fontSize: "20px", paddingTop: "5px"}}>
+                                {item.product_price.toLocaleString()}
+                                <span> vnđ</span>
                               </h3>
-                              <a className="btn" href="">
+                              <a className="btn" href={url}>
                                 <i className="fa fa-shopping-cart" />
                                 Buy Now
                               </a>
@@ -405,15 +520,15 @@ const List = memo(
               </div>
 
               <div className="col-lg-4 sidebar">
-                <div className="sidebar-widget category">
+                {/* <div className="sidebar-widget category">
                   <MenuClassify />
-                </div>
+                </div> */}
                 <div className="sidebar-widget widget-slider">
                   <h2 className="title">Sản phẩm hot</h2>
                   <Slider {...setting} className="sidebar-slider normal-slider">
                     {_.map(dataHot, (item, key) => {
                       var url =
-                        "chi-tiet-" + item.product_id + "/" + item.product_name;
+                        "/chi-tiet-" + item.product_id + "/" + item.product_name;
                       return (
                         <div className="product-item" key={key}>
                           <div className="product-title">
@@ -434,9 +549,9 @@ const List = memo(
                               />
                             </a>
                             <div className="product-action">
-                              <a href="#">
+                              {/* <a href="#">
                                 <i className="fa fa-cart-plus" />
-                              </a>
+                              </a> */}
                               <a href={url}>
                                 <i className="fas fa-eye" />
                               </a>
@@ -447,9 +562,9 @@ const List = memo(
                               {item.product_price.toLocaleString()}
                               <span>vnđ</span>
                             </h3>
-                            <a className="btn" href="">
+                            <a className="btn" href={url}>
                               <i className="fa fa-shopping-cart" />
-                              Buy Now
+                              Mua ngay
                             </a>
                           </div>
                         </div>
@@ -480,7 +595,22 @@ const List = memo(
   }
 );
 
-export default styled(List)`
+const mapStateToProps = createStructuredSelector({
+  dataCart: makeActionCart(),
+});
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      actionCart,
+    },
+    dispatch
+  );
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps
+);
+export default styled(compose(withConnect)(List))`
   .product-item {
     padding-right: 20px;
   }
@@ -499,5 +629,10 @@ export default styled(List)`
   .ant-input-number {
     background: #000;
     width: 80px !important;
+  }
+  .product-detail .tab-content ul li::before {
+    content: unset;
+    font-family: unset;
+    padding-right: 5px;
   }
 `;

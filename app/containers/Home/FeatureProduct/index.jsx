@@ -26,10 +26,15 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import * as style from "components/Variables";
 import ServiceBase from "utils/ServiceBase";
+import { $Cookies } from "utils/cookies";
 import Ui from "utils/Ui";
+import { ERP_REPORT, Order } from "utils/constants";
+import { useHistory, useLocation } from "react-router-dom";
 
 let time;
+let array = [];
 const FeatureProduct = memo(({ className }) => {
+  let history = useHistory();
   const [loading, setLoading] = useState(false);
   const [totalLength, setTotalLength] = useState(false);
   const [data, setData] = useState([]);
@@ -97,6 +102,44 @@ const FeatureProduct = memo(({ className }) => {
     clearTimeout(time);
     time = setTimeout(boweload, 800);
   }, [boweload]);
+  // const handleAddProduct = (item) => {
+  //   const token = JSON.parse($Cookies.get(ERP_REPORT));
+  //   if(token) {
+  //     array.push(item);
+  //     localStorage.setItem("CART", JSON.stringify(array)); 
+  //     let newParam = {
+  //       user_id: token.admin_name,
+  //       product_id: token.adm_phone,
+  //     }
+  //     const boweload = useCallback(async () => {
+  //       setLoading(true);
+  //       let result = await ServiceBase.requestJson({
+  //         url: "/order/addProduct",
+  //         method: "POST",
+  //         data: {},
+  //       });
+  //       if (result.hasErrors) {
+  //         Ui.showErrors(result.errors);
+  //         setLoading(false);
+  //       } else {
+  //         setLoading(false);
+  //         setTotalLength(_.get(result, "value.length"));
+  //         let i = 0;
+  //         let arrData = _.map(_.get(result, "value.data"), (item, index) => {
+  //           item.key = i++;
+  //           return item;
+  //         });
+  //         setData(arrData);
+  //       }
+  //     }, []);
+  //     useEffect(() => {
+  //       clearTimeout(time);
+  //       time = setTimeout(boweload, 800);
+  //     }, [boweload]);
+  //   } else {
+  //     history.push("/signin");
+  //   }
+  // }
   return (
     <div
       className={classNames({
@@ -113,7 +156,8 @@ const FeatureProduct = memo(({ className }) => {
             className="row align-items-center product-slider product-slider-4"
           >
             {_.map(data, (item, key) => {
-              var url = "chi-tiet-" + item.product_id + "/" + item.product_name;
+              var url = "/chi-tiet-" + item.product_id + "/" + item.product_name;
+              var urlAdd = "them-" + item.product_id;
               return (
                 <div className="product-item" key={key}>
                   <div className="product-title">
@@ -131,9 +175,9 @@ const FeatureProduct = memo(({ className }) => {
                       <img src={item.product_image} alt={item.product_name} />
                     </a>
                     <div className="product-action">
-                      <a href="/chi-tiet">
+                      {/* <a onClick={() => handleAddProduct(item)}>
                         <i className="fa fa-cart-plus" />
-                      </a>
+                      </a> */}
                       <a href={url}>
                         <i className="fas fa-eye" />
                       </a>
@@ -144,9 +188,9 @@ const FeatureProduct = memo(({ className }) => {
                       {item.product_price.toLocaleString()}
                       <span>vnđ</span>
                     </h3>
-                    <a className="btn" href="">
+                    <a className="btn" href={url}>
                       <i className="fa fa-shopping-cart" />
-                      Buy Now
+                      Mua ngay
                     </a>
                   </div>
                 </div>
@@ -186,7 +230,7 @@ const FeatureProduct = memo(({ className }) => {
                 </h3>
                 <a className="btn" href="">
                   <i className="fa fa-shopping-cart" />
-                  Buy Now
+                  Mua ngay
                 </a>
               </div>
             </div>
@@ -223,7 +267,7 @@ const FeatureProduct = memo(({ className }) => {
                 </h3>
                 <a className="btn" href="">
                   <i className="fa fa-shopping-cart" />
-                  Buy Now
+                  Mua ngay
                 </a>
               </div>
             </div>
@@ -260,7 +304,7 @@ const FeatureProduct = memo(({ className }) => {
                 </h3>
                 <a className="btn" href="">
                   <i className="fa fa-shopping-cart" />
-                  Buy Now
+                  Mua ngay
                 </a>
               </div>
             </div>
@@ -297,7 +341,7 @@ const FeatureProduct = memo(({ className }) => {
                 </h3>
                 <a className="btn" href="">
                   <i className="fa fa-shopping-cart" />
-                  Buy Now
+                  Mua ngay
                 </a>
               </div>
             </div> */}

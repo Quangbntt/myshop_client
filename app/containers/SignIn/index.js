@@ -35,15 +35,30 @@ const formLayout = {
 };
 const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
   //Xử lý đăng nhập google
-  const responseGoogle = (response) => {
+  const responseGoogle = async (response) => {
+    let params = {
+      email: _.get(response.profileObj, "email"),
+      familyName: _.get(response.profileObj, "familyName"),
+      givenName: _.get(response.profileObj, "givenName"),
+      uuId: _.get(response.profileObj, "googleId"),
+      image: _.get(response.profileObj, "imageUrl"),
+      name: _.get(response.profileObj, "name"),
+    };
+    let url = "/usersocial/create";
+    let result = await ServiceBase.requestJson({
+      url: url,
+      method: "POST",
+      data: params,
+    });
     Ui.showSuccess({ message: "Đăng nhập hệ thống thành công." });
-    let profile = _.get(response, "profileObj");
+    let profile = _.get(result, "value")[0];
 
     profile = {
-      ...profile,
+      // ...profile,
       parentName: _.get(profile, "name", ""),
-      adm_name: _.get(profile, "givenName", ""),
-      parentId: _.get(profile, "googleId", ""),
+      adm_name: _.get(profile, "name", ""),
+      uuId: _.get(profile, "uuId", ""),
+      parentId: _.get(profile, "id", ""),
       rolesName: _.get(profile, "email", ""),
     };
     delete profile.role;
@@ -64,15 +79,26 @@ const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
     });
   };
   //Xử lý đăng nhập bằng facebook
-  const responseFacebook = (response) => {
+  const responseFacebook = async (response) => {
+    let params = {
+      uuId: _.get(response, "id"),
+      image: _.get(response.picture.data.url, "url"),
+      name: _.get(response, "name"),
+    };
+    let url = "/usersocial/create";
+    let result = await ServiceBase.requestJson({
+      url: url,
+      method: "POST",
+      data: params,
+    });
     Ui.showSuccess({ message: "Đăng nhập hệ thống thành công." });
-    let profile = response;
+    let profile = _.get(result, "value")[0];
     profile = {
-      ...profile,
+      // ...profile,
       parentName: _.get(profile, "name", ""),
       adm_name: _.get(profile, "name", ""),
-      parentId: _.get(profile, "userID", ""),
-      rolesName: _.get(profile, "graphDomain", ""),
+      uuId: _.get(profile, "uuId", ""),
+      parentId: _.get(profile, "id", ""),
     };
     delete profile.role;
     Globals.setSession({
@@ -117,8 +143,9 @@ const SignIn = ({ className, isAuthenticated, setAuthenticated }) => {
         let profile = _.get(result, "value", {});
         profile = {
           ...profile,
-          parentName: _.get(profile, "value.adm_name", ""),
-          parentId: _.get(profile, "value.adm_id", ""),
+          parentName: _.get(profile, "adm_name", ""),
+          parentId: _.get(profile, "adm_id", ""),
+          parentPhone: _.get(profile, "adm_phone", ""),
           rolesName: _.get(profile, "value.role", ""),
         };
         delete profile.role;

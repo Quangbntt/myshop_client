@@ -21,7 +21,7 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
     },
     [history]
   );
-  
+
   const _handleLogOut = useCallback(() => {
     _forwardTo("/");
     onLogOut();
@@ -33,6 +33,7 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
   const handleOk = () => {
     setVisible(false);
     Ui.showSuccess({ message: "Đã đăng xuất." });
+    history.push("/");
     onLogOut();
   };
   const handleCancel = () => {
@@ -41,7 +42,7 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
   const clickAccount = (e) => {
     let url = "/tai-khoan/" + e;
     history.push(url);
-  }
+  };
 
   return (
     <>
@@ -145,11 +146,11 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
                     Tin tức
                   </a>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <a className="nav-link navbar_text" href="/bo-suu-tap">
                     Bộ sưu tập
                   </a>
-                </li>
+                </li> */}
                 <li className="nav-item">
                   <a className="nav-link navbar_text" href="/lien-he">
                     Liên hệ
@@ -167,7 +168,14 @@ function Navbar({ className, pathName, onLogOut, isAuthenticated, profile }) {
                       {proFile.adm_name && <b>Chào, {proFile.adm_name}</b>}
                     </a>
                     <div className="dropdown-menu">
-                      <a onClick={() => clickAccount(proFile.adm_id)} className="dropdown-item">
+                      <a
+                        onClick={() =>
+                          clickAccount(
+                            proFile.googleId ? proFile.googleId : proFile.parentId
+                          )
+                        }
+                        className="dropdown-item"
+                      >
                         Tài khoản của tôi
                       </a>
                       <a onClick={logOut} className="dropdown-item">

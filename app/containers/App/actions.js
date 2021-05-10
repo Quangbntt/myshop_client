@@ -12,6 +12,7 @@ import {
   SET_MQTT,
   ACTION_SELECT,
   ACTION_PROGRESS,
+  ACTION_CART,
 } from "./constants";
 
 const browseGlobalConfig = createRoutine(BROWSE_GLOBAL_CONFIG, null, {
@@ -50,6 +51,12 @@ const actionProgress = (dataProgress) => ({
   type: ACTION_PROGRESS,
   payload: {
     dataProgress,
+  },
+});
+const actionCart = (dataCart) => ({
+  type: ACTION_CART,
+  payload: {
+    dataCart,
   },
 });
 export {

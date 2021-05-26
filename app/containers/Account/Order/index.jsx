@@ -109,8 +109,8 @@ const Order = memo(
     const onShow = async (item) => {
       let result = await ServiceBase.requestJson({
         url: `/shipplace/default`,
-        method: "GET",
-        data: { id: params.id },
+        method: "POST",
+        data: { user_id: params.id, id: item.size_id },
       });
       if (result.hasErrors) {
         Ui.showErrors(result.errors);
@@ -128,8 +128,8 @@ const Order = memo(
     const onRate = async (item) => {
       let result = await ServiceBase.requestJson({
         url: `/shipplace/default`,
-        method: "GET",
-        data: { id: params.id },
+        method: "POST",
+        data: { user_id: params.id, id: item.size_id, },
       });
       if (result.hasErrors) {
         Ui.showErrors(result.errors);
@@ -179,7 +179,7 @@ const Order = memo(
                   <th>Số lượng</th>
                   <th>Tổng tiền</th>
                   <th>Trạng thái</th>
-                  <th></th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
@@ -206,6 +206,16 @@ const Order = memo(
                           ).toLocaleString()}
                         </td>
                         {item.orders_status === 1 && (
+                          <td>
+                            <Tooltip
+                              placement="topLeft"
+                              title="Chờ xác nhận"
+                            >
+                              Chờ xác nhận
+                            </Tooltip>{" "}
+                          </td>
+                        )}
+                        {item.orders_status === 4 && (
                           <td>
                             <Tooltip
                               placement="topLeft"
@@ -261,7 +271,7 @@ const Order = memo(
                               </button>
                             </Tooltip>
                           )}
-                          {item.orders_status === 1 && (
+                          {item.orders_status === 1 && item.orders_status != 4 && (
                             <>
                               <Tooltip placement="topLeft" title="Hủy đơn hàng">
                                 <button
@@ -272,18 +282,20 @@ const Order = memo(
                                   <CloseOutlined />
                                 </button>
                               </Tooltip>
-                              <Tooltip
-                                placement="topLeft"
-                                title="Đã nhận được hàng"
-                              >
-                                <button
-                                  className="btn"
-                                  onClick={() => onSuccess(item.orders_id)}
-                                >
-                                  <CheckOutlined />
-                                </button>
-                              </Tooltip>
                             </>
+                          )}
+                          {item.orders_status === 4 && (
+                            <Tooltip
+                              placement="topLeft"
+                              title="Đã nhận được hàng"
+                            >
+                              <button
+                                className="btn"
+                                onClick={() => onSuccess(item.orders_id)}
+                              >
+                                <CheckOutlined />
+                              </button>
+                            </Tooltip>
                           )}
                         </td>
                       </tr>

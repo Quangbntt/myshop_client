@@ -98,33 +98,33 @@ const List = memo(
     const result = dataPlace[0].ship_place.filter((x) => x.default == 1);
     const [place, setPlace] = useState(result[0].id);
 
-    const handleBuy = async () => {
-      let paramsBuy = {
-        product_size_id: arrSizeId,
-        user_id: params.user_id,
-        shipplace_id: place,
-        orders_status: 1,
-        orders_quantity: arrQuantity,
-        product_price: arrPrice,
-        orders_type: 2,
-        product_cost: arrCost,
-      };
-      let result = await ServiceBase.requestJson({
-        url: `/order/addProduct`,
-        method: "POST",
-        data: paramsBuy,
-      });
-      if (result.hasErrors) {
-        Ui.showErrors(result.errors);
-      } else {
-        Ui.showSuccess({ message: "Mua hàng thành công" });
-        setParams((preState) => {
-          let nextState = { ...preState };
-          nextState = nextState;
-          return nextState;
-        });
-      }
-    };
+    // const handleBuy = async () => {
+    //   let paramsBuy = {
+    //     product_size_id: arrSizeId,
+    //     user_id: params.user_id,
+    //     shipplace_id: place,
+    //     orders_status: 1,
+    //     orders_quantity: arrQuantity,
+    //     product_price: arrPrice,
+    //     orders_type: 2,
+    //     product_cost: arrCost,
+    //   };
+    //   let result = await ServiceBase.requestJson({
+    //     url: `/order/addProduct`,
+    //     method: "POST",
+    //     data: paramsBuy,
+    //   });
+    //   if (result.hasErrors) {
+    //     Ui.showErrors(result.errors);
+    //   } else {
+    //     Ui.showSuccess({ message: "Mua hàng thành công" });
+    //     setParams((preState) => {
+    //       let nextState = { ...preState };
+    //       nextState = nextState;
+    //       return nextState;
+    //     });
+    //   }
+    // };
     return (
       <div
         className={classNames({

@@ -27,44 +27,38 @@ const Home = memo(({ className }) => {
   });
   const [params, setParams] = useState({
     page: 1,
-    limit: 100,
-    name: undefined,
-    branch: undefined,
-    price_from: undefined,
-    price_to: undefined,
+    size: 10,
   });
 
-  // const boweload = useCallback(async () => {
-    
-  //   let newParams = {
-  //     page: params.page,
-  //     limit: params.limit,
-  //   };
-
-  //   setLoading(true);
-  //   let result = await ServiceBase.requestJson({
-  //     url: "/product/all",
-  //     method: "GET",
-  //     data: newParams,
-  //   });
-  //   if (result.hasErrors) {
-  //     Ui.showErrors(result.errors);
-  //     setLoading(false);
-  //   } else {
-  //     setLoading(false);
-  //     setTotalLength(_.get(result, "value.total"));
-  //     let i = 0;
-  //     let arrData = _.map(_.get(result, "value.data"), (item, index) => {
-  //       item.key = i++;
-  //       return item;
-  //     });
-  //     setData(arrData);
-  //   }
-  // }, [params]);
-  // useEffect(() => {
-  //   clearTimeout(time);
-  //   time = setTimeout(boweload, 800);
-  // }, [boweload]);
+  const boweload = useCallback(async () => {
+    let newParams = {
+      page: params.page,
+      size: params.size,
+    };
+    setLoading(true);
+    let result = await ServiceBase.requestJson({
+      url: "/address/all",
+      method: "GET",
+      data: newParams,
+    });
+    if (result.hasErrors) {
+      Ui.showErrors(result.errors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      setTotalLength(_.get(result, "value.length"));
+      let i = 0;
+      let arrData = _.map(_.get(result, "value.data"), (item, index) => {
+        item.key = i++;
+        return item;
+      });
+      setData(arrData);
+    }
+  }, [params]);
+  useEffect(() => {
+    clearTimeout(time);
+    time = setTimeout(boweload, 800);
+  }, [boweload]);
   return (
     <div
       className={classNames({
@@ -74,16 +68,17 @@ const Home = memo(({ className }) => {
       <div className="product-view">
         <div className="container-fluid">
           <Spin spinning={loading}>
-            <List
-              // data={data}
-              // setData={setData}
-              loading={loading}
-              setParams={setParams}
-              totalLength={totalLength}
-              params={params}
-              visible={visible}
-              setVisible={setVisible}
-            />
+            {data.length > 0 && (
+              <List
+                data={data}
+                setData={setData}
+                loading={loading}
+                setParams={setParams}
+                params={params}
+                visible={visible}
+                setVisible={setVisible}
+              />
+            )}
           </Spin>
         </div>
       </div>

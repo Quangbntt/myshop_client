@@ -59,23 +59,23 @@ const AuthorizedLayout = ({
     setCollapsed(!collapsed);
   };
   const token = $Cookies.get(JWT_TOKEN);
-  useEffect(() => {
-    window.fbAsyncInit = function() {
-      FB.init({
-        xfbml: true,
-        version: "v10.0",
-      });
-    };
-    (function(d, s, id) {
-      var js,
-        fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s);
-      js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    })(document, "script", "facebook-jssdk");
-  });
+  // useEffect(() => {
+  //   window.fbAsyncInit = function() {
+  //     FB.init({
+  //       xfbml: true,
+  //       version: "v10.0",
+  //     });
+  //   };
+  //   (function(d, s, id) {
+  //     var js,
+  //       fjs = d.getElementsByTagName(s)[0];
+  //     if (d.getElementById(id)) return;
+  //     js = d.createElement(s);
+  //     js.id = id;
+  //     js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
+  //     fjs.parentNode.insertBefore(js, fjs);
+  //   })(document, "script", "facebook-jssdk");
+  // });
 
   // const onBrowseGlobalConfigRequest = useCallback(async () => {
   //   if (token) {
@@ -116,14 +116,6 @@ const AuthorizedLayout = ({
           {children}
         </Content>
         <div id="fb-root" />
-        <div
-          className="fb-customerchat"
-          attribution="install_email"
-          page_id="101130798731006"
-          theme_color="#fa3c4c"
-          logged_in_greeting="Xin chào! Tôi có thể giúp gì cho bạn"
-          logged_out_greeting="Xin chào! Tôi có thể giúp gì cho bạn"
-        />
         <MessengerCustomerChat pageId="101130798731006" appId="1022924814904577" />
         <BackTop>
           <div style={style}>

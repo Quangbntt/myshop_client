@@ -83,6 +83,7 @@ const List = memo(
     };
     let total = 0;
     const arrSizeId = [];
+    const arrCartId = [];
     const arrQuantity = [];
     const arrPrice = [];
     const arrCost = [];
@@ -92,7 +93,10 @@ const List = memo(
         (item.quantity * item.product_price * item.discount) / 100;
       arrSizeId.push(item.size_id);
       arrQuantity.push(item.quantity);
-      arrPrice.push(item.product_price - item.product_price * item.discount/100);
+      arrCartId.push(item.id);
+      arrPrice.push(
+        item.product_price - (item.product_price * item.discount) / 100
+      );
       arrCost.push(item.product_promotion);
     });
     const onChangePlace = (e) => {
@@ -115,6 +119,7 @@ const List = memo(
           orders_status: 1,
           orders_quantity: arrQuantity,
           product_price: arrPrice,
+          cart_id: arrCartId,
           orders_type: 2,
           product_cost: arrCost,
         };

@@ -7,7 +7,7 @@ import {
   Space,
   Button,
   Input,
-  Spin,
+  AutoComplete,
   Row,
   Form,
   Select,
@@ -48,14 +48,18 @@ const List = memo(
     };
     let history = useHistory();
     const onFinish = async (values) => {
+      console.log(id);
       let params = {
+        province_id: id.province_id,
+        district_id: id.district_id,
+        ward_id: id.ward_id,
         username: _.get(values, "username"),
         password: _.get(values, "password"),
         name: _.get(values, "name"),
         address: _.get(values, "address"),
         email: _.get(values, "email"),
         phone: _.get(values, "phone"),
-        birthday: moment(values.birthday).format("YYYY-DD-MM"),
+        birthday: moment(values.birthday).format("YYYY-MM-DD"),
       };
       let url = "/user/create";
       let result = await ServiceBase.requestJson({
@@ -76,7 +80,83 @@ const List = memo(
         });
       }
     };
-
+    const [autoCompleteResult, setAutoCompleteResult] = useState([]);
+    const [id, setId] = useState({
+      province_id: undefined,
+      district_id: undefined,
+      ward_id: undefined,
+    });
+    const [dataDistrict, setDataDistrict] = useState({
+      disable: true,
+      data: {},
+    });
+    const [dataWard, setDataWard] = useState({
+      disable: true,
+      data: {},
+    });
+    const handleClickProvince = (e) => {
+      setAutoCompleteResult(data);
+    };
+    const onProvinceChange = (value) => {
+      setAutoCompleteResult(data);
+    };
+    const provinceOptions = autoCompleteResult.map((x) => ({
+      label: x.name,
+      value: x.name,
+      id: x.id,
+      district: x.district,
+    }));
+    const handleSelectProvince = (value, option) => {
+      setDataDistrict((preState) => {
+        let nextState = { ...preState };
+        nextState.disable = false;
+        nextState.data = option.district;
+        return nextState;
+      });
+      setId((preState) => {
+        let nextState = { ...preState };
+        nextState.province_id = option.id;
+        return nextState;
+      });
+    };
+    const districtOptions =
+      dataDistrict.data.length > 0 &&
+      dataDistrict.data.map((x) => ({
+        label: x.name,
+        value: x.name,
+        id: x.id,
+        ward: x.ward,
+      }));
+    const handleSelectDistrict = (value, option) => {
+      setDataWard((preState) => {
+        let nextState = { ...preState };
+        nextState.disable = false;
+        nextState.data = option.ward;
+        return nextState;
+      });
+      setId((preState) => {
+        let nextState = { ...preState };
+        nextState.district_id = option.id;
+        return nextState;
+      });
+    };
+    // const onDistrictChange = (value) => {
+    //   setDataDistrict(data);
+    // };
+    const wardOptions =
+      dataWard.data.length > 0 &&
+      dataWard.data.map((x) => ({
+        label: x.name,
+        value: x.name,
+        id: x.id,
+      }));
+    const handleSelectWard = (value, option) => {
+      setId((preState) => {
+        let nextState = { ...preState };
+        nextState.ward_id = option.id;
+        return nextState;
+      });
+    };
     const prefixSelector = (
       <Form.Item name="prefix" noStyle>
         <Select style={{ width: 70 }}>
@@ -151,7 +231,6 @@ const List = memo(
             >
               <Input.Password />
             </Form.Item>
-
             <Form.Item
               name="confirm"
               label="Nhập lại mật khẩu"
@@ -231,7 +310,75 @@ const List = memo(
             >
               <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
             </Form.Item>
-
+            <Form.Item
+              name="province"
+              label="Tỉnh/Thành phố"
+              rules={[
+                {
+                  required: true,
+                  message: "Bạn chưa nhập tỉnh/thành phố",
+                },
+              ]}
+            >
+              <AutoComplete
+                options={provinceOptions}
+                onClick={handleClickProvince}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                onChange={onProvinceChange}
+                onSelect={handleSelectProvince}
+                placeholder="Tỉnh/Thành phố"
+              >
+                <Input />
+              </AutoComplete>
+            </Form.Item>
+            <Form.Item
+              name="district"
+              label="Huyện/Thị xã"
+              rules={[
+                {
+                  required: true,
+                  message: "Bạn chưa nhập huyện/thị xã",
+                },
+              ]}
+            >
+              <AutoComplete
+                options={districtOptions}
+                disabled={dataDistrict.disable}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                // onChange={onDistrictChange}
+                onSelect={handleSelectDistrict}
+                placeholder="Huyện/Thị xã"
+              >
+                <Input />
+              </AutoComplete>
+            </Form.Item>
+            <Form.Item
+              name="ward"
+              label="Xã/Phường"
+              rules={[
+                {
+                  required: true,
+                  message: "Bạn chưa nhập xã/phường",
+                },
+              ]}
+            >
+              <AutoComplete
+                options={wardOptions}
+                disabled={dataWard.disable}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                // onChange={onDistrictChange}
+                onSelect={handleSelectWard}
+                placeholder="Xã/Phường"
+              >
+                <Input />
+              </AutoComplete>
+            </Form.Item>
             <Form.Item
               name="agreement"
               valuePropName="checked"
@@ -240,7 +387,9 @@ const List = memo(
                   validator: (_, value) =>
                     value
                       ? Promise.resolve()
-                      : Promise.reject(new Error("Bạn chưa đồng ý điều kiện của cửa hàng")),
+                      : Promise.reject(
+                          new Error("Bạn chưa đồng ý điều kiện của cửa hàng")
+                        ),
                 },
               ]}
               {...tailFormItemLayout}

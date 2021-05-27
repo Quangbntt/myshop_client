@@ -2053,6 +2053,7 @@ h2 {
   align-items: center;
   flex-direction: row;
   background: #ffffff;
+  min-height: 210px;
 }
 
 .review .review-img {

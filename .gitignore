@@ -6,3 +6,6 @@ build/
 .env
 internals/webpack/.env.development
 internals/webpack/.env.production
+
+# Local Netlify folder
+.netlify

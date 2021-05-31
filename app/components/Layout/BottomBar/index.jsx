@@ -11,17 +11,35 @@ import * as style from "components/Variables";
 import Logo from "images/logo.png";
 const prefix = "app.routing.";
 import classNames from "classnames";
+import { $Cookies } from "../../../utils/cookies";
+import { bindActionCreators } from "redux";
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import {
+  makeSelectIsAuthenticated,
+  makeSelectAppConfig,
+  makeActionCart,
+  makeActionDelCart,
+} from "containers/App/selectors";
+
 let time = null;
 const { Option } = AutoComplete;
-function Footer({ className, pathName }) {
+
+function Footer({ className, pathName, dataCart, dataDelCart }) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [count, setCount] = useState(0);
   const [values, setValues] = useState("");
   const [params, setParams] = useState({
     name: undefined,
+    count: 0,
   });
-  var dataCart = JSON.parse(localStorage.getItem("CART"));
+  const [arrCart, setArrCart] = useState({
+    data: [],
+    count: 0,
+  });
 
   const onSearch = (e) => {
     setParams((preState) => {
@@ -52,10 +70,15 @@ function Footer({ className, pathName }) {
   };
 
   const boweload = useCallback(async () => {
+    const proFile = $Cookies.get("ERP_REPORT")
+      ? JSON.parse($Cookies.get("ERP_REPORT"))
+      : {};
     setLoading(true);
     let newParams = {
       name: params.name,
+      user_id: proFile.parentId,
     };
+
     let result = await ServiceBase.requestJson({
       url: "/product/search-client",
       method: "GET",
@@ -73,7 +96,27 @@ function Footer({ className, pathName }) {
       });
       setData(arrData);
     }
-  }, [params]);
+
+    let resultCount = await ServiceBase.requestJson({
+      url: "/order/count-cart",
+      method: "GET",
+      data: newParams,
+    });
+    if (resultCount.hasErrors) {
+      Ui.showErrors(resultCount.errors);
+    } else {
+      let quantity = 0;
+      _.map(resultCount.value.data, (v, k) => {
+        quantity += v.quantity;
+      });
+      setArrCart((preState) => {
+        let nextState = { ...preState };
+        nextState.data = resultCount.value.data;
+        nextState.count = quantity;
+        return nextState;
+      });
+    }
+  }, [params, dataCart, dataDelCart]);
   useEffect(() => {
     clearTimeout(time);
     time = setTimeout(boweload, 800);
@@ -129,7 +172,8 @@ function Footer({ className, pathName }) {
               <div className="user">
                 <a href="/gio-hang" className="btn cart">
                   <i className="fa fa-shopping-cart" />
-                  {/* <span>({dataCart ? dataCart.length : 0})</span> */}
+                  &nbsp;
+                  <span>({arrCart.count})</span>
                 </a>
               </div>
             </div>
@@ -144,8 +188,16 @@ Footer.propTypes = {
   classNameName: PropTypes.any,
   pathName: PropTypes.any,
 };
+const mapStateToProps = createStructuredSelector({
+  dataCart: makeActionCart(),
+  dataDelCart: makeActionDelCart(),
+});
 
-export default memo(styled(Footer)`
+const withConnect = connect(mapStateToProps);
+export default compose(
+  withConnect,
+  memo
+)(styled(Footer)`
   padding: 1rem 0 1rem 0;
   a {
     color: ${style.color.haiVan.primary};
@@ -165,5 +217,8 @@ export default memo(styled(Footer)`
   }
   .ant-input-search-icon::before {
     border-left: 1px solid #ff6f61;
+  }
+  .ant-select-item-option-content a {
+    color: #000 !important;
   }
 `);

@@ -23,18 +23,23 @@ const { Option } = Select;
 let time = null;
 const ModalCreate = memo(
   ({ visible, setVisible, setRow, row, data, setData, setParams }) => {
+    console.log("visible",visible);
     const [form] = Form.useForm();
-    const [marker, setMarker] = useState({ lat: undefined, lng: undefined });
+    const [marker, setMarker] = useState({
+      lat: visible.data.lat ? visible.data.lat : 20.9802148,
+      lng: visible.data.long ? visible.data.long : 105.8414544,
+    });
+    console.log("marker",marker);
     const user_id = useParams();
     const [objForm, setObjForm] = useState({});
     const [center, setCenter] = useState({
-      lat: 0,
-      lng: 0,
+      lat: visible.data.lat ? visible.data.lat : undefined,
+      lng: visible.data.long ? visible.data.long : undefined,
     });
     const [nameP, setNameP] = useState("");
     const [address, setAddress] = useState("");
     const handleSelect = async (value) => {
-      form.setFieldsValue({ "address": value });
+      form.setFieldsValue({ address: value });
       const results = await geocodeByAddress(value);
       console.log("resultsresults", results);
       const latLng = await getLatLng(results[0]);
@@ -141,6 +146,12 @@ const ModalCreate = memo(
 
     const boweload = useCallback(async () => {
       if (type === "edit") {
+        setMarker((preState) => {
+          let nextState = { ...preState };
+          nextState.lat = _.get(visible, "data").lat;
+          nextState.lng = _.get(visible, "data").long;
+          return nextState;
+        });
         form.setFieldsValue(_.get(visible, "data"));
       }
     }, [_.get(visible, "data")]);
@@ -148,7 +159,6 @@ const ModalCreate = memo(
       setTimeout(boweload, 0);
     }, [boweload]);
 
-    console.log(address);
     return (
       <Modal
         title={type === "create" ? "Thêm mới địa chỉ" : "Cập nhật địa chỉ"}
@@ -280,10 +290,15 @@ const ModalCreate = memo(
                         zoom={16}
                         center={center}
                         onClick={mapClicked}
+                        initialCenter = {{
+                          lat: marker? marker.lat: undefined,
+                          lng: marker? marker.lng: undefined,
+                        }}
                       >
                         <Marker
                           title={nameP}
-                          position={{ lat: marker.lat, lng: marker.lng }}
+                          position={{  lat: marker? marker.lat: undefined,
+                            lng: marker? marker.lng: undefined, }}
                         />
                         <Marker />
                       </Map>

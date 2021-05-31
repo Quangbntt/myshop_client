@@ -28,6 +28,7 @@ const Home = memo(({ className }) => {
     page: 1,
     limit: 10,
     name: undefined,
+    sex: 0,
     branch: undefined,
     price_from: undefined,
     price_to: undefined,
@@ -45,6 +46,7 @@ const Home = memo(({ className }) => {
     let newParams = {
       price_from: params.priceFrom,
       price_to: params.priceTo,
+      sex: params.sex,
       product: arrProduct,
       branch: arrBranch,
       page: params.page,

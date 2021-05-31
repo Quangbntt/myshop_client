@@ -16,7 +16,8 @@ import {
   SET_MQTT,
   ACTION_SELECT,
   ACTION_PROGRESS,
-  ACTION_CART 
+  ACTION_CART,
+  ACTION_DEL_CART,
 } from "./constants";
 
 setupSession();
@@ -26,6 +27,8 @@ export const initialState = Map({
   appConfig: {},
   client: {},
   dataSelect: [],
+  dataCart: Map(),
+  dataDelCart: Map(),
   dataProgress: [],
 });
 
@@ -61,7 +64,10 @@ const appReducer = (state = initialState, action) =>
       case ACTION_CART:
         nextState = nextState.set("dataCart", _.get(payload, "dataCart"));
         return nextState;
-        F;
+      case ACTION_DEL_CART:
+        nextState = nextState.set("dataDelCart", _.get(payload, "dataDelCart"));
+        console.log(nextState);
+        return nextState;
       case ACTION_SELECT:
         nextState = nextState.set("dataSelect", _.get(payload, "dataSelect"));
         return nextState;

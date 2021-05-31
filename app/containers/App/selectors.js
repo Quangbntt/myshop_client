@@ -36,11 +36,11 @@ export const makeSelectIsAuthenticated = () =>
     substate => substate.get('isAuthenticated'),
   );
   //mqtt
-export const makeSelectMap = () =>
-  createSelector(
-    selectAppDomain,
-    substate => substate.get('client'),
-  );
+  export const makeSelectMap = () =>
+    createSelector(
+      selectAppDomain,
+      substate => substate.get('client'),
+    );
   export const makeActionSelect = ()=>
   createSelector(
     selectAppDomain,
@@ -56,7 +56,12 @@ export const makeSelectMap = () =>
   export const makeActionCart = ()=>
   createSelector(
     selectAppDomain,
-    substate => substate.get('dataCart'),
+    substate => substate.get('dataCart')
+  )
+  export const makeActionDelCart = ()=>
+  createSelector(
+    selectAppDomain,
+    substate => substate.get('dataDelCart')
   )
 
 export { selectAppDomain };

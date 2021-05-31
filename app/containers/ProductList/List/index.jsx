@@ -43,6 +43,7 @@ const List = memo(
       autoplay: true,
       autoplaySpeed: 2000,
     };
+    
     const onClick = (item) => {
       const obj = {
         key: item.branches_id,

@@ -13,6 +13,7 @@ import {
   ACTION_SELECT,
   ACTION_PROGRESS,
   ACTION_CART,
+  ACTION_DEL_CART
 } from "./constants";
 
 const browseGlobalConfig = createRoutine(BROWSE_GLOBAL_CONFIG, null, {
@@ -59,6 +60,12 @@ const actionCart = (dataCart) => ({
     dataCart,
   },
 });
+const actionDelCart = (dataDelCart) => ({
+  type: ACTION_DEL_CART,
+  payload: {
+    dataDelCart,
+  },
+});
 export {
   browseGlobalConfig,
   setAuthenticated,
@@ -67,4 +74,6 @@ export {
   connectMqtt,
   actionSelect,
   actionProgress,
+  actionCart,
+  actionDelCart
 };

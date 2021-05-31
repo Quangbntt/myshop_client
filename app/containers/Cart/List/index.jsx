@@ -20,11 +20,21 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import ServiceBase from "utils/ServiceBase";
 import { Ui } from "utils/Ui";
 import { useHistory } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import {
+  makeSelectIsAuthenticated,
+  makeSelectAppConfig,
+  makeActionDelCart,
+} from "containers/App/selectors";
+import { actionDelCart } from "containers/App/actions";
 
 const { confirm } = Modal;
 
 const List = memo(
-  ({ className, setParams, data, params, count, setCount, dataPlace }) => {
+  ({ className, setParams, data, params, count, setCount, dataPlace, actionDelCart }) => {
     const history = useHistory();
     //Hàm tăng giảm số lượng sản phẩm trong giỏ
     const onUpdateQuantity = (quantity, key) => {
@@ -65,6 +75,7 @@ const List = memo(
       });
     };
     const onDelteApi = async (row) => {
+      actionDelCart(row);
       let result = await ServiceBase.requestJson({
         url: `/order/delete-cart`,
         method: "POST",
@@ -123,6 +134,7 @@ const List = memo(
           orders_type: 2,
           product_cost: arrCost,
         };
+        actionDelCart(paramsBuy);
         let result = await ServiceBase.requestJson({
           url: `/order/addProduct`,
           method: "POST",
@@ -309,8 +321,22 @@ const List = memo(
     );
   }
 );
+const mapStateToProps = createStructuredSelector({
+  dataDelCart: makeActionDelCart(),
+});
 
-export default styled(List)`
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      actionDelCart,
+    },
+    dispatch
+  );
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps
+);
+export default styled(compose(withConnect)(List))`
   .ant-input-number {
     background: #000;
     width: 80px !important;

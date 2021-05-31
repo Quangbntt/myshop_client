@@ -1,40 +1,45 @@
-import React, { memo, useState, useEffect, useMemo, Component } from "react";
-import { Table, Badge, Menu, Row, Form, Button, Col, Rate } from "antd";
+import React, { memo, useState, useEffect, useMemo } from "react";
+import { Row, Form, Button, Col, Rate } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import classNames from "classnames";
-import moment from "moment";
 import _ from "lodash";
 import styled from "styled-components";
 import { $Cookies } from "utils/cookies";
 import ServiceBase from "utils/ServiceBase";
 import { Ui } from "utils/Ui";
-import * as style from "components/Variables";
+import { useHistory } from "react-router-dom";
 
 const List = memo(({ className, setParams, data, params }) => {
-  const token = JSON.parse($Cookies.get("ERP_REPORT"));
   const [form] = Form.useForm();
+  const history = useHistory();
   const onFinish = async (values) => {
-    let params = {
-      customerid: token.parentId,
-      comment: _.get(values, "comment"),
-      rate: _.get(values, "rate"),
-    };
-    let url = "";
-    url = "/feedback/create";
-    let result = await ServiceBase.requestJson({
-      url: url,
-      method: "POST",
-      data: params,
-    });
-    if (result.hasErrors) {
-      let message = "";
-      message = ["Bạn đã đánh giá trang rồi"];
-      Ui.showErrors(message);
+    if ($Cookies.get("ERP_REPORT") != undefined) {
+      const token = JSON.parse($Cookies.get("ERP_REPORT"));
+      let params = {
+        customerid: token.parentId,
+        comment: _.get(values, "comment"),
+        rate: _.get(values, "rate"),
+      };
+      let url = "";
+      url = "/feedback/create";
+      let result = await ServiceBase.requestJson({
+        url: url,
+        method: "POST",
+        data: params,
+      });
+      if (result.hasErrors) {
+        let message = "";
+        message = ["Bạn đã đánh giá trang rồi"];
+        Ui.showErrors(message);
+      } else {
+        let message = "";
+        message = "Cảm ơn bạn đã đóng góp ý kiến";
+        Ui.showSuccess({ message: message });
+        form.resetFields();
+      }
     } else {
-      let message = "";
-      message = "Cảm ơn bạn đã đóng góp ý kiến";
-      Ui.showSuccess({ message: message });
-      form.resetFields();
+      Ui.showErrors(["Bạn phải đăng nhập để có thể đánh giá"]);
+      history.push("/signin");
     }
   };
   const desc = ["Hài lòng", "Tốt", "Yêu thích", "Tuyệt vời", "Siêu tuyệt vời"];

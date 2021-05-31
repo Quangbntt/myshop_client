@@ -17,9 +17,11 @@ import classNames from "classnames";
 import ServiceBase from "utils/ServiceBase";
 import { AiOutlineClose } from "react-icons/ai";
 import { Ui } from "utils/Ui";
+import { useParams } from "react-router";
 import SelectMultiple from "components/SelectMultiple";
 import { useHistory, useLocation } from "react-router-dom";
 
+const { Option } = Select;
 const Fillter = memo(({ className, params, setParams }) => {
   let history = useHistory();
   let location = useLocation();
@@ -38,6 +40,7 @@ const Fillter = memo(({ className, params, setParams }) => {
     setParams((preState) => {
       let nextState = { ...preState };
       nextState.name = undefined;
+      nextState.sex = 0;
       nextState.branch = undefined;
       nextState.priceFrom = undefined;
       nextState.priceTo = undefined;
@@ -46,12 +49,13 @@ const Fillter = memo(({ className, params, setParams }) => {
       return nextState;
     });
   };
-
+  
   // function xử lí phần push search lên url để copy link vẫn dc filter
   const pushQuery = useMemo(() => {
     let pathName = location.pathname;
     let pathProductName = [];
     let pathBranch = [];
+    let pathSex = [];
     let pathPriceFrom = "";
     let pathPriceTo = "";
     if (_.size(params.price_from) > 0) {
@@ -63,12 +67,15 @@ const Fillter = memo(({ className, params, setParams }) => {
     if (_.size(params.name) > 0) {
       pathProductName = JSON.stringify(params.name);
     }
+    if (_.size(params.sex) >= 0) {
+      pathSex = JSON.stringify(params.sex);
+    }
     if (_.size(params.branch) > 0) {
       pathBranch = JSON.stringify(params.branch);
     }
     history.push({
       pathname: pathName,
-      search: `?price_from=${pathPriceFrom}&price_to=${pathPriceTo}&name=${pathProductName}&branch=${pathBranch}`,
+      search: `?price_from=${pathPriceFrom}&price_to=${pathPriceTo}&name=${pathProductName}&branch=${pathBranch}&sex=${pathSex}`,
     });
   }, [params]);
   // khi mới đầu vào thì sẽ set lại dữ liệu khi url có phần search
@@ -76,6 +83,7 @@ const Fillter = memo(({ className, params, setParams }) => {
     pushQuery;
     const query = new URLSearchParams(location.search);
     const paramName = query.get("name");
+    const paramSex = query.get("sex");
     const pathBranch = query.get("branch");
     const pathPriceFrom = query.get("price_from");
     const pathPriceTo = query.get("price_to");
@@ -90,6 +98,9 @@ const Fillter = memo(({ className, params, setParams }) => {
       }
       if (paramName) {
         nextState.name = JSON.parse(paramName);
+      }
+      if (paramSex) {
+        nextState.sex = JSON.parse(paramSex);
       }
       if (pathBranch) {
         nextState.branch = JSON.parse(pathBranch);
@@ -215,6 +226,19 @@ const Fillter = memo(({ className, params, setParams }) => {
               getQuery(branch, "branch");
             }}
           />
+        </Col>
+        <Col xl={2} lg={2} md={2} xs={11} style={{ marginTop: 21 }}>
+          <Select
+            value={params.sex}
+            onChange={(value) => {
+              let sex = value;
+              getQuery(sex, "sex");
+            }}
+          >
+            <Option value={1}>Nữ</Option>
+            <Option value={2}>Nam</Option>
+            <Option value={0}>Tất cả</Option>
+          </Select>
         </Col>
         <Col className="clearParams" xxl={1} xl={1} lg={1} md={1} sm={1} xs={2}>
           <Tooltip placement="topLeft" title="Xóa bộ lọc">

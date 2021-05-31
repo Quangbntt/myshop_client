@@ -33,6 +33,7 @@ import {
 } from "containers/App/selectors";
 import { actionCart } from "containers/App/actions";
 
+
 const List = memo(
   ({
     className,
@@ -43,6 +44,7 @@ const List = memo(
     dataBranch,
     dataSame,
     dataRate,
+    actionCart
   }) => {
     data.discount > 0 ? data.discount : 0;
     const images = data.product_more_image;
@@ -71,6 +73,35 @@ const List = memo(
           return nextState;
         });
       }
+    };
+    var isMobile = {
+      Android: function() {
+        return navigator.userAgent.match(/Android/i);
+      },
+      BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+      },
+      iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+      },
+      Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+      },
+      Windows: function() {
+        return (
+          navigator.userAgent.match(/IEMobile/i) ||
+          navigator.userAgent.match(/WPDesktop/i)
+        );
+      },
+      any: function() {
+        return (
+          isMobile.Android() ||
+          isMobile.BlackBerry() ||
+          isMobile.iOS() ||
+          isMobile.Opera() ||
+          isMobile.Windows()
+        );
+      },
     };
     const settings = {
       customPaging: function(i) {
@@ -105,7 +136,7 @@ const List = memo(
       dots: false,
       infinite: true,
       speed: 500,
-      slidesToShow: 3,
+      slidesToShow: isMobile.any() ? 1 : 3,
       slidesToScroll: 1,
       autoplay: true,
       autoplaySpeed: 2000,
@@ -165,8 +196,9 @@ const List = memo(
           size_name: value.size,
           product_id: value.product_id,
           quantity: count,
-          discount: item.discount
+          discount: item.discount,
         };
+        actionCart(newParam);
         let result = await ServiceBase.requestJson({
           url: "/order/add-order",
           method: "POST",
@@ -202,17 +234,41 @@ const List = memo(
                       <Slider
                         {...settings}
                         className="product-slider-single normal-slider"
+                        style={{ position: "relative" }}
                       >
                         {_.map(data.product_more_image, (item, key) => {
                           return (
-                            <img
-                              src={item}
-                              alt="san pham"
-                              key={key}
-                              onClick={() =>
-                                setState({ isOpen: true, photoIndex: 0 })
-                              }
-                            />
+                            <>
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  border: "2px solid rgb(255, 221, 43)",
+                                  backgroundColor: "rgb(200, 0, 0)",
+                                  borderRadius: "0px 40px 40px 0px",
+                                  top: "8px",
+                                  left: "-8px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    fontWeight: "700",
+                                    padding: "4px 12px",
+                                    color: "rgb(255, 221, 43)",
+                                    fontSize: "14px",
+                                  }}
+                                >
+                                  Giảm {data.discount} %
+                                </div>
+                              </div>
+                              <img
+                                src={item}
+                                alt="san pham"
+                                key={key}
+                                onClick={() =>
+                                  setState({ isOpen: true, photoIndex: 0 })
+                                }
+                              />
+                            </>
                           );
                         })}
                       </Slider>
@@ -502,7 +558,9 @@ const List = memo(
                               </div>
                             </div>
                             <div className="product-price">
-                              <h3 style={{fontSize: "20px", paddingTop: "5px"}}>
+                              <h3
+                                style={{ fontSize: "20px", paddingTop: "5px" }}
+                              >
                                 {item.product_price.toLocaleString()}
                                 <span> vnđ</span>
                               </h3>
@@ -528,7 +586,10 @@ const List = memo(
                   <Slider {...setting} className="sidebar-slider normal-slider">
                     {_.map(dataHot, (item, key) => {
                       var url =
-                        "/chi-tiet-" + item.product_id + "/" + item.product_name;
+                        "/chi-tiet-" +
+                        item.product_id +
+                        "/" +
+                        item.product_name;
                       return (
                         <div className="product-item" key={key}>
                           <div className="product-title">
@@ -634,5 +695,8 @@ export default styled(compose(withConnect)(List))`
     content: unset;
     font-family: unset;
     padding-right: 5px;
+  }
+  .slick-slide.slick-active.slick-current {
+    position: relative;
   }
 `;
